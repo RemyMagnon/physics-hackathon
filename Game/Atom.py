@@ -5,6 +5,8 @@ import math
 from Constants import *
 from Particle import Particle
 import radioactivedecay as rd
+from enum import Enum, auto
+import numpy as np
 
 atoms_symbols = [
         "u",
@@ -71,10 +73,10 @@ atoms_name = [
 
 
 atoms_size = [
-    1.0,
-    1.0,
-    4.0,
-    4.2,
+    2.0,
+    2.0,
+    6.0,
+    6.2,
     10.7,
     8.8,
     9.85,
@@ -169,12 +171,11 @@ atoms_label = [
 
 
 class Atom(Particle):
-    def __init__(self, name, x, y):
-        super().__init__(x, y)
+    def __init__(self, name, x, y, radius):
+        super().__init__(x, y, radius)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
         self.name = name
-        self.index = atoms_symbols.index(name)
         if name not in atoms_symbols:
             raise TypeError("Not a valid atom! Check Atom.py for a full list.")
         elif name == "u":
@@ -184,10 +185,10 @@ class Atom(Particle):
             self.proton_number = 0
             self.neutron_number = 0
             self.half_life = float("inf")
-            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
+            self.index = atoms_symbols.index(name)
         elif name == "d":
             self.type = "quark"
             self.identity = "down quark"
@@ -195,10 +196,10 @@ class Atom(Particle):
             self.proton_number = 0
             self.neutron_number = 0
             self.half_life = float("inf")
-            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
+            self.index = atoms_symbols.index(name)
         elif name == "n":
             self.type = "neutron"
             self.identity = "neutron"
@@ -206,30 +207,45 @@ class Atom(Particle):
             self.proton_number = 0
             self.neutron_number = 0
             self.half_life = float("inf")
-            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
+            self.index = atoms_symbols.index(name)
         else:
             self.type = "atom"
             self.identity = rd.Nuclide(name)
             self.id = self.identity.id
             self.proton_number = self.identity.Z
             self.neutron_number = self.identity.A - self.identity.Z
-            self.half_life = self.identity.half_life()
-            self.half_life_readable = self.identity.half_life("readable")
             self.decays_into = self.identity.progeny()
             self.decay_type = self.identity.decay_modes()
             self.info = "Placeholder text."
+            self.index = atoms_symbols.index(name)
+            self.half_life = np.log(self.identity.half_life())
+
+    def decay(self):
+        if len(self.decays_into) > 0:
+            self.destroy = True
+
+            import Game
+            Game.add_atom(self.decays_into[0], self.x, self.y, self.radius)
 
     def update(self):
-        self.apply_gravity()
+        self.apply_gravity(strength_multiplier=0.85)
         current_speed = math.hypot(self.vx, self.vy)
         if current_speed > optimal_speed_quarks:
             scale_factor = optimal_speed_quarks / current_speed
             self.vx *= scale_factor
             self.vy *= scale_factor
         self.update_position()
+
+        self.half_life -= 1/60
+
+        if self.half_life <= 0:
+            self.decay()
+
+        if self.type == "atom":
+            print(self.half_life)
 
     def draw(self, surface):
         import Game

@@ -176,16 +176,19 @@ def check_atom_merging():
                 print("Merged :", name)
                 try:
                     particles.append(Atom(name, avg_x, avg_y, 10))
-                except TypeError:
+                except ValueError:
                     print("Failed to create atom:", name)
                 for q in group:
                     q.destroy = True
             
-            break    
+            break
+@staticmethod
+def add_atom(name, x, y, radius):
+    particles.append(Atom(name, x, y, radius))
 
 # ---------------- INIT ----------------
 for _ in range(NUM_QUARKS):
-    particles.append(Atom())
+    particles.append(Quark())
 
 # ---------------- LOOP ----------------
 
@@ -217,8 +220,8 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        if isinstance(p, Nucleon) and p.name == "H-1":
-            apply_cluster_attraction(p, particles)
+        # if isinstance(p, Nucleon) and p.name == "H-1":
+            # apply_cluster_attraction(p, particles)
 
     if gravity_active:
         mx, my = gravity_pos
