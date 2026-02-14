@@ -4,6 +4,7 @@ import math
 from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
+from Electron import Electron
 
 pygame.init()
 
@@ -151,6 +152,8 @@ def check_merging():
 # ---------------- INIT ----------------
 for _ in range(NUM_QUARKS):
     particles.append(Quark())
+for _ in range(NUM_ELECTRONS):
+    particles.append(Electron())
 
 # ---------------- LOOP ----------------
 
