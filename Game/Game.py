@@ -167,13 +167,15 @@ def check_atom_merging():
             
             # Only consider merging if they are different types (proton vs neutron)
             name = Atom.merge(group[0], group[1])
-            print(name)
+            
             if(name != None):   
-                if(name in atoms):
+                if name in atoms:
+                    print(name)
                     for q in group:
                         q.destroy = True
                     avg_x = sum(q.x for q in group) / len(group)
                     avg_y = sum(q.y for q in group) / len(group)
+                    print("Merged atoms:", name)
                     particles.append(Atom(name, avg_x, avg_y, 10))
             
             break    
