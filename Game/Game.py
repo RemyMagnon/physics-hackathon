@@ -1,30 +1,19 @@
 import pygame
 import random
 import math
+from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
 
 pygame.init()
 
-WIDTH, HEIGHT = 1000, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
 
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 22)
 
-# -----------  PARAMETERS -----------
-NUM_QUARKS = 10
-QUARK_RADIUS = 8
-NUCLEON_RADIUS = 12
-
-GRAVITY_STRENGTH = 120
-MERGE_DISTANCE = 30
-MERGE_SPEED_THRESHOLD = 12
-# ----------------------------------------------------
-
 particles = []
-optimal_speed_quarks = 2
 gravity_active = False
 gravity_pos = (0, 0)
 

@@ -1,13 +1,12 @@
 # Updated Nucleon subclass
 import random
 import pygame
+from Constants import *
 from Particle import Particle
 
 class Nucleon(Particle):
     def __init__(self, x, y, kind):
-        import Game
-        g = Game
-        super().__init__(x, y, radius=g.NUCLEON_RADIUS)
+        super().__init__(x, y, radius=NUCLEON_RADIUS)
         self.kind = kind
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)

@@ -2,13 +2,12 @@
 import random
 import math
 import pygame
+from Constants import *
 from Particle import Particle
 
 class Quark(Particle):
     def __init__(self):
-        import Game
-        g = Game
-        super().__init__(radius=g.QUARK_RADIUS)
+        super().__init__(radius=QUARK_RADIUS)
         angle = random.uniform(0, 2 * math.pi)
         speed = random.uniform(0.5, 2)
         self.vx = math.cos(angle) * speed
@@ -17,10 +16,9 @@ class Quark(Particle):
 
     def update(self):
         self.apply_gravity()
-        import Game
         current_speed = math.hypot(self.vx, self.vy)
-        if current_speed > Game.optimal_speed_quarks:
-            scale_factor = Game.optimal_speed_quarks / current_speed
+        if current_speed > optimal_speed_quarks:
+            scale_factor = optimal_speed_quarks / current_speed
             self.vx *= scale_factor
             self.vy *= scale_factor
         self.update_position()
