@@ -97,9 +97,6 @@ class Quark:
         self.x %= WIDTH
         self.y %= HEIGHT
 
-        self.vx *= 0.995
-        self.vy *= 0.995
-
     def speed(self):
         return math.hypot(self.vx, self.vy)
 
@@ -138,9 +135,6 @@ class Nucleon:
 
         self.x %= WIDTH
         self.y %= HEIGHT
-
-        self.vx *= 0.995
-        self.vy *= 0.995
 
     def draw(self, surface):
         color = (255, 80, 80) if self.kind == "proton" else (80, 140, 255)
@@ -189,17 +183,18 @@ def check_merging():
                 for q in group:
                     q.destroy = True
 
-                # Spawn exactly one new quark on merge
-                new_q = Quark()
-                new_q.x = random.uniform(-500, 500)
-                new_q.y = random.uniform(-500, 500)
+                # Spawn exactly three new quarks on merge
+                for _ in range(3):
+                    new_q = Quark()
+                    new_q.x = random.uniform(-500, 500)
+                    new_q.y = random.uniform(-500, 500)
 
-                angle = random.uniform(0, 2 * math.pi)
-                speed = random.uniform(1, 3)
-                new_q.vx = math.cos(angle) * speed
-                new_q.vy = math.sin(angle) * speed
+                    angle = random.uniform(0, 2 * math.pi)
+                    speed = random.uniform(1, 3)
+                    new_q.vx = math.cos(angle) * speed
+                    new_q.vy = math.sin(angle) * speed
 
-                particles.append(new_q)
+                    particles.append(new_q)
 
                 break
 
