@@ -27,7 +27,7 @@ class Particle:
         self.x %= WIDTH
         self.y %= HEIGHT
 
-    def apply_gravity(self, strength_multiplier=1.0):
+    def apply_gravity(self, strength_multiplier=QUARK_ATTRACTION_MULTIPLIER):
         import Game
         if Game.gravity_active:
             dx = Game.gravity_pos[0] - self.x

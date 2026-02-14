@@ -4,7 +4,7 @@ import math
 from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
-from Electron import Electron
+from Hydrogen import Hydrogen
 
 pygame.init()
 
@@ -99,7 +99,7 @@ def apply_cluster_attraction(nucleaon, particles, max_force=0.05,
 
 
 # ---------------- MERGING ----------------
-def check_merging():
+def check_quarks_merging():
     quarks = [p for p in particles if isinstance(p, Quark)]
 
     for i in range(len(quarks)):
@@ -148,12 +148,55 @@ def check_merging():
 
                 break
 
+def check_nucleon_merging():
+    nucleons = [p for p in particles if isinstance(p, Nucleon)]
+
+    for i in range(len(nucleons)):
+        cluster = []
+
+        for j in range(len(nucleons)):
+            dx = nucleons[i].x - nucleons[j].x
+            dy = nucleons[i].y - nucleons[j].y
+            if math.hypot(dx, dy) < MERGE_DISTANCE:
+                cluster.append(nucleons[j])
+        
+        if len(cluster) >= 2:
+            group = cluster[:2]
+            
+            for q in group:
+                q.destroy = True
+
+            # Only consider merging if they are different types (proton vs neutron)
+            if group[0].kind != group[1].kind:
+              
+                avg_x = sum(q.x for q in group) / len(group)
+                avg_y = sum(q.y for q in group) / len(group)
+                particles.append(Hydrogen(avg_x, avg_y, num_protons=1, num_neutrons=1))
+
+        elif len(cluster) >= 3:
+            group = cluster[:3]
+
+            # Check if group contains 2 protons and 1 neutron
+            proton_count = sum(1 for q in group if q.kind == "proton")
+            neutron_count = sum(1 for q in group if q.kind == "neutron")
+            
+            for q in group:
+                q.destroy = True
+
+            if proton_count == 2 and neutron_count == 1:
+               
+                avg_x = sum(q.x for q in group) / len(group)
+                avg_y = sum(q.y for q in group) / len(group)
+                particles.append(Hydrogen(avg_x, avg_y, num_protons=2, num_neutrons=1))
+
+            break
+
+
+    
 
 # ---------------- INIT ----------------
 for _ in range(NUM_QUARKS):
     particles.append(Quark())
-for _ in range(NUM_ELECTRONS):
-    particles.append(Electron())
 
 # ---------------- LOOP ----------------
 
@@ -176,7 +219,7 @@ while running:
         gravity_pos = pygame.mouse.get_pos()
 
     for p in particles[:]:
-        if isinstance(p, Quark) and p.destroy:
+        if p.destroy:
             particles.remove(p)
             continue
         p.update()
@@ -193,7 +236,8 @@ while running:
         pygame.draw.circle(screen, (180, 180, 255), (mx, my), 25, 2)
         pygame.draw.circle(screen, (120, 120, 255), (mx, my), 10)
 
-    check_merging()
+    check_quarks_merging()
+    check_nucleon_merging()
 
     pygame.display.flip()
 
