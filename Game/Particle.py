@@ -4,7 +4,7 @@ import math
 from Constants import *
 
 class Particle:
-    def __init__(self, x=None, y=None, radius=5):
+    def __init__(self, x=None, y=None):
         if x is not None:
             self.x = x
         else:
@@ -17,7 +17,6 @@ class Particle:
 
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
-        self.radius = radius
         self.destroy = False
 
     def update_position(self):

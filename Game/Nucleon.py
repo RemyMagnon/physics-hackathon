@@ -1,9 +1,7 @@
 # Updated Nucleon subclass
 import random
-import pygame
 import math
 from Constants import *
-from Particle import Particle
 from Atom import Atom
 
 class Nucleon(Atom):

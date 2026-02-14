@@ -7,7 +7,7 @@ from Particle import Particle
 
 class Quark(Particle):
     def __init__(self):
-        super().__init__(radius=QUARK_RADIUS)
+        super().__init__()
         angle = random.uniform(0, 2 * math.pi)
         speed = random.uniform(0.5, 2)
         self.vx = math.cos(angle) * speed

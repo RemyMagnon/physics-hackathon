@@ -5,10 +5,9 @@ import math
 from Constants import *
 from Particle import Particle
 import radioactivedecay as rd
-from enum import Enum, auto
-import numpy as np
 
-atoms = ["u",
+atoms_symbols = [
+        "u",
         "d",
         "n",
         "H-1",
@@ -39,13 +38,144 @@ atoms = ["u",
         "Ne-20"]
 
 
+atoms_name = [
+        "Up quark",
+        "Down quark",
+        "Neutron",
+        "Hydrogen-1",
+        "Hydrogen-2",
+        "Hydrogen-3",
+        "Helium-3",
+        "Helium-4",
+        "Lithium-6",
+        "Lithium-7",
+        "Beryllium-7",
+        "Boron-10",
+        "Beryllium-10",
+        "Boron-11",
+        "Carbon-10",
+        "Carbon-11",
+        "Nitrogen-13",
+        "Oxygen-14",
+        "Carbon-12",
+        "Carbon-13",
+        "Carbon-14",
+        "Nitrogen-14",
+        "Oxygen-16",
+        "Oxygen-15",
+        "Oxygen-17",
+        "Oxygen-18",
+        "Fluorine-19",
+        "Fluorine-18",
+        "Neon-20"]
+
+
+atoms_size = [
+    1.0,
+    1.0,
+    4.0,
+    4.2,
+    10.7,
+    8.8,
+    9.85,
+    8.4,
+    12.95,
+    12.2,
+    13.25,
+    12.25,
+    11.8,
+    12.05,
+    12.5,
+    12.4,
+    12.65,
+    13.0,
+    12.35,
+    12.3,
+    12.5,
+    12.7,
+    13.5,
+    13.05,
+    13.45,
+    13.65,
+    14.5,
+    14.0,
+    15.0]
+
+
+atoms_color = [
+    (128, 128, 128),
+    (128, 128, 128),
+    (128, 128, 128),
+    (255, 255, 255),
+    (255, 255, 255),
+    (255, 255, 255),
+    (217, 255, 255),
+    (217, 255, 255),
+    (204, 128, 255),
+    (204, 128, 255),
+    (194, 255, 0),
+    (255, 181, 181),
+    (194, 255, 0),
+    (255, 181, 181),
+    (144, 144, 144),
+    (144, 144, 144),
+    (48, 80, 248),
+    (255, 13, 13),
+    (144, 144, 144),
+    (144, 144, 144),
+    (144, 144, 144),
+    (48, 80, 248),
+    (255, 13, 13),
+    (255, 13, 13),
+    (255, 13, 13),
+    (255, 13, 13),
+    (144, 224, 80),
+    (144, 224, 80),
+    (179, 227, 245)]
+
+
+atoms_label = [
+    "u",
+    "d",
+    "n",
+    "¹H",
+    "²H",
+    "³H",
+    "³He",
+    "⁴He",
+    "⁶Li",
+    "⁷Li",
+    "⁷Be",
+    "¹⁰B",
+    "¹⁰Be",
+    "¹¹B",
+    "¹⁰C",
+    "¹¹C",
+    "¹³N",
+    "¹⁴O",
+    "¹²C",
+    "¹³C",
+    "¹⁴C",
+    "¹⁴N",
+    "¹⁶O",
+    "¹⁵O",
+    "¹⁷O",
+    "¹⁸O",
+    "¹⁹F",
+    "¹⁸F",
+    "²⁰Ne"
+]
+
+
+
 class Atom(Particle):
-    def __init__(self, name, x, y, radius):
-        super().__init__(x, y, radius)
+    def __init__(self, name, x, y):
+        super().__init__(x, y)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
         self.name = name
-        if name not in atoms:
+        self.index = atoms_symbols.index(name)
+        if name not in atoms_symbols:
             raise TypeError("Not a valid atom! Check Atom.py for a full list.")
         elif name == "u":
             self.type = "quark"
@@ -85,7 +215,7 @@ class Atom(Particle):
             self.info = "Placeholder text."
 
     def update(self):
-        self.apply_gravity(strength_multiplier=0.85)
+        self.apply_gravity()
         current_speed = math.hypot(self.vx, self.vy)
         if current_speed > optimal_speed_quarks:
             scale_factor = optimal_speed_quarks / current_speed
@@ -95,33 +225,23 @@ class Atom(Particle):
 
     def draw(self, surface):
         import Game
-        color = (255, 255, 255)
-        pygame.draw.circle(surface, color,
-                           (int(self.x), int(self.y)), self.radius)
-        
-        if(self.name == "H-1"):
-            color = (255, 80, 80) 
-            label = "P" 
-        else:            
-            color = (80, 80, 255)
-            label = "N"
-        # Create label with superscript mass number for atoms
-        label = self._generate_label()
-
-        pygame.draw.circle(surface, (255, 255, 255), (self.x, self.y), self.radius)
-        text = Game.font.render(label, True, (100, 100, 100))
-        surface.blit(text, (self.x - text.get_width() // 1, self.y - text.get_height() // 1))
+        pygame.draw.circle(surface, atoms_color[self.index], (int(self.x), int(self.y)), atoms_size[self.index])
+        text = Game.font.render(atoms_symbols[self.index], True, (255, 255, 255))
+        rect = text.get_rect(center=(self.x, self.y))
+        surface.blit(text, rect)
     
     def _generate_label(self):
+
+        return atoms_label[self.index]
+
         """Generate a label with superscript notation for the atom."""
         superscript_map = {
             '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
             '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
         }
-        
     
         if self.type == "neutron":
-            return "N"
+            return "n"
         
         if self.type == "atom":
             if self.name == "H-1":

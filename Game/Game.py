@@ -4,8 +4,7 @@ import math
 from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
-from Hydrogen import Hydrogen
-from Atom import Atom, atoms
+from Atom import Atom
 
 pygame.init()
 
@@ -64,8 +63,7 @@ def handle_collisions():
 #    max_force: max acceleration applied per frame
 #    min_distance: distance below which force is capped
 
-def apply_cluster_attraction(nucleon, particles, max_force=-0.01,
-                             min_distance=20):
+def apply_cluster_attraction(nucleon, particles, max_force=-0.01, min_distance=20):
     my_cluster = [nucleon]
     my_center_x = sum(q.x for q in my_cluster) / len(my_cluster)
     my_center_y = sum(q.y for q in my_cluster) / len(my_cluster)
@@ -187,7 +185,7 @@ def check_atom_merging():
 
 # ---------------- INIT ----------------
 for _ in range(NUM_QUARKS):
-    particles.append(Quark())
+    particles.append(Atom())
 
 # ---------------- LOOP ----------------
 
