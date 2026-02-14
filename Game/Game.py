@@ -180,14 +180,14 @@ def check_nucleon_merging():
             proton_count = sum(1 for q in group if q.kind == "proton")
             neutron_count = sum(1 for q in group if q.kind == "neutron")
             
-            for q in group:
-                q.destroy = True
-
             if proton_count == 2 and neutron_count == 1:
                
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
                 particles.append(Hydrogen(avg_x, avg_y, num_protons=2, num_neutrons=1))
+
+                for q in group:
+                    q.destroy = True
 
             break
 
