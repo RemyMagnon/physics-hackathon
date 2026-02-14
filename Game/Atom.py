@@ -44,6 +44,7 @@ class Atom(Particle):
         super().__init__(x, y, radius)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
+        self.name = name
         if name not in atoms:
             raise TypeError("Not a valid atom! Check Atom.py for a full list.")
         elif name == "u":
@@ -52,6 +53,8 @@ class Atom(Particle):
             self.id = 10**6/3 + 2*10**3/3
             self.proton_number = 0
             self.neutron_number = 0
+            self.half_life = float("inf")
+            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
@@ -61,6 +64,8 @@ class Atom(Particle):
             self.id = 10**6/3 - 10**3/3
             self.proton_number = 0
             self.neutron_number = 0
+            self.half_life = float("inf")
+            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
@@ -70,6 +75,8 @@ class Atom(Particle):
             self.id = 10000000
             self.proton_number = 0
             self.neutron_number = 0
+            self.half_life = float("inf")
+            self.half_life_readable = float("inf")
             self.decays_into = []
             self.decay_type = []
             self.info = "Placeholder text."
@@ -79,6 +86,8 @@ class Atom(Particle):
             self.id = self.identity.id
             self.proton_number = self.identity.Z
             self.neutron_number = self.identity.A - self.identity.Z
+            self.half_life = self.identity.half_life()
+            self.half_life_readable = self.identity.half_life("readable")
             self.decays_into = self.identity.progeny()
             self.decay_type = self.identity.decay_modes()
             self.info = "Placeholder text."
