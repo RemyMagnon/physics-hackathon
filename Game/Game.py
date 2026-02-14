@@ -5,6 +5,7 @@ from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
 from Hydrogen import Hydrogen
+from Atom import Atom
 
 pygame.init()
 
@@ -70,7 +71,7 @@ def apply_cluster_attraction(nucleon, particles, max_force=-0.01,
     my_center_y = sum(q.y for q in my_cluster) / len(my_cluster)
 
     for other in particles:
-        if isinstance(other, Nucleon) and other.kind == "proton" and other not in my_cluster:
+        if isinstance(other, Nucleon) and other.name == "H-1" and other not in my_cluster:
             other_cluster = [other]
             other_center_x = sum(q.x for q in other_cluster) / len(
                 other_cluster)
@@ -119,16 +120,16 @@ def check_quarks_merging():
                 flavors = [q.flavor for q in group]
 
                 if flavors.count("up") == 2 and flavors.count("down") == 1:
-                    kind = "proton"
+                    name = "H-1"
                 elif flavors.count("down") == 2 and flavors.count("up") == 1:
-                    kind = "neutron"
+                    name = "n"
                 else:
                     continue
 
                 avg_x = sum(q.x for q in group) / 3
                 avg_y = sum(q.y for q in group) / 3
 
-                particles.append(Nucleon(avg_x, avg_y, kind))
+                particles.append(Nucleon(name,avg_x, avg_y))
 
                 for q in group:
                     q.destroy = True
@@ -148,51 +149,34 @@ def check_quarks_merging():
 
                 break
 
-def check_nucleon_merging():
-    nucleons = [p for p in particles if isinstance(p, Nucleon)]
+def check_atom_merging():
+    atoms = [p for p in particles if isinstance(p, Atom)]
 
-    for i in range(len(nucleons)):
+    for i in range(len(atoms)):
         cluster = []
 
-        for j in range(len(nucleons)):
-            dx = nucleons[i].x - nucleons[j].x
-            dy = nucleons[i].y - nucleons[j].y
-            if math.hypot(dx, dy) < MERGE_DISTANCE:
-                cluster.append(nucleons[j])
+        for j in range(len(atoms)):
+            dx = atoms[i].x - atoms[j].x
+            dy = atoms[i].y - atoms[j].y
+            if math.hypot(dx, dy) < MERGE_DISTANCE+30:
+                cluster.append(atoms[j])
         
         if len(cluster) == 2:
             group = cluster[:2]
+           
             
             # Only consider merging if they are different types (proton vs neutron)
-            if group[0].kind != group[1].kind:
-                for q in group:
-                    q.destroy = True
-                avg_x = sum(q.x for q in group) / len(group)
-                avg_y = sum(q.y for q in group) / len(group)
-                particles.append(Hydrogen(avg_x, avg_y, num_protons=1, num_neutrons=1))
+            name = Atom.merge(group[0], group[1])
+            print(name)
+            if(name != None):   
+                if(name in atoms):
+                    for q in group:
+                        q.destroy = True
+                    avg_x = sum(q.x for q in group) / len(group)
+                    avg_y = sum(q.y for q in group) / len(group)
+                    particles.append(Atom(name, avg_x, avg_y, 10))
             
-            break
-
-        elif len(cluster) == 3:
-            group = cluster[:3]
-
-            # Check if group contains 2 protons and 1 neutron
-            proton_count = sum(1 for q in group if q.kind == "proton")
-            neutron_count = sum(1 for q in group if q.kind == "neutron")
-            
-            if proton_count == 2 and neutron_count == 1:
-               
-                avg_x = sum(q.x for q in group) / len(group)
-                avg_y = sum(q.y for q in group) / len(group)
-                particles.append(Hydrogen(avg_x, avg_y, num_protons=2, num_neutrons=1))
-
-                for q in group:
-                    q.destroy = True
-
-            break
-
-
-    
+            break    
 
 # ---------------- INIT ----------------
 for _ in range(NUM_QUARKS):
@@ -228,7 +212,7 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        if isinstance(p, Nucleon) and p.kind == "proton":
+        if isinstance(p, Nucleon) and p.name == "H-1":
             apply_cluster_attraction(p, particles)
 
     if gravity_active:
@@ -237,7 +221,7 @@ while running:
         pygame.draw.circle(screen, (120, 120, 255), (mx, my), 10)
 
     check_quarks_merging()
-    check_nucleon_merging()
+    check_atom_merging()
 
     pygame.display.flip()
 
