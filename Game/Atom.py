@@ -8,7 +8,10 @@ import radioactivedecay as rd
 from enum import Enum, auto
 import numpy as np
 
-atoms = ["H-1",
+atoms = ["u",
+        "d",
+        "n",
+        "H-1",
         "H-2",
         "H-3",
         "He-3",
@@ -43,14 +46,42 @@ class Atom(Particle):
         self.vy = random.uniform(-1, 1)
         if name not in atoms:
             raise TypeError("Not a valid atom! Check Atom.py for a full list.")
-        self.identity = rd.Nuclide(name)
-        self.id = self.identity.id
-        self.proton_number = self.identity.Z
-        self.neutron_number = self.identity.A - self.identity.Z
-
-        self.decays_into = self.identity.progeny()
-        self.decay_type = self.identity.decay_modes()
-        self.info = "Placeholder text."
+        elif name == "u":
+            self.type = "quark"
+            self.identity = "up quark"
+            self.id = 10**6/3 + 2*10**3/3
+            self.proton_number = 0
+            self.neutron_number = 0
+            self.decays_into = []
+            self.decay_type = []
+            self.info = "Placeholder text."
+        elif name == "d":
+            self.type = "quark"
+            self.identity = "down quark"
+            self.id = 10**6/3 - 10**3/3
+            self.proton_number = 0
+            self.neutron_number = 0
+            self.decays_into = []
+            self.decay_type = []
+            self.info = "Placeholder text."
+        elif name == "n":
+            self.type = "neutron"
+            self.identity = "neutron"
+            self.id = 10000000
+            self.proton_number = 0
+            self.neutron_number = 0
+            self.decays_into = []
+            self.decay_type = []
+            self.info = "Placeholder text."
+        else:
+            self.type = "atom"
+            self.identity = rd.Nuclide(name)
+            self.id = self.identity.id
+            self.proton_number = self.identity.Z
+            self.neutron_number = self.identity.A - self.identity.Z
+            self.decays_into = self.identity.progeny()
+            self.decay_type = self.identity.decay_modes()
+            self.info = "Placeholder text."
 
     def update(self):
         self.apply_gravity(strength_multiplier=0.85)
@@ -67,12 +98,32 @@ class Atom(Particle):
     def merge(self, other):
         if not isinstance(other, Atom):
             return None
-        sum = str(rd.Nuclide(self.id + other.id))
-        str_start = sum.index("Nuclide: ")
-        str_end = sum.index(", decay")
-        sum = sum[str_start + 9:str_end]
-        return Atom(sum)
+        elif other.type and self.type == "atom" or "neutron":
+            sum = str(rd.Nuclide(self.id + other.id))
+            str_start = sum.index("Nuclide: ")
+            str_end = sum.index(", decay")
+            sum = sum[str_start + 9:str_end]
+            return Atom(sum)
+        else: 
+            return None
+    
+    def quarkmerge(self, other1, other2):
+        if not isinstance(other1, Atom) or not isinstance(other2, Atom):
+            return None
+        elif self.type and other1.type and other2.type == "quark":
+            ID = self.id + other1.id + other2.id
+            if ID == 10010000 or 10000000:
+                sum = str(rd.Nuclide(ID))
+                str_start = sum.index("Nuclide: ")
+                str_end = sum.index(", decay")
+                sum = sum[str_start + 9:str_end]
+                return Atom(sum)
+            else: 
+                return None
+        else: 
+            return None
+
    
     def __str__(self):
-        return self.name
+        return self.name  
 
