@@ -4,13 +4,15 @@ import pygame
 import math
 from Constants import *
 from Particle import Particle
+from Atom import Atom
 
-class Nucleon(Particle):
-    def __init__(self, x, y, kind):
-        super().__init__(x, y, radius=NUCLEON_RADIUS)
-        self.kind = kind
+class Nucleon(Atom):
+    def __init__(self,name, x, y):
+        super().__init__(name,x, y, radius=NUCLEON_RADIUS)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
+        self.merge_timer = 0  # Timer to track how long nucleons stick together
+        self.merge_group_id = None  # ID of the group this nucleon is trying to merge with
 
     def update(self):
         self.apply_gravity(strength_multiplier=NUCLEON_ATTRACTION_MULTIPLIER)
@@ -20,18 +22,3 @@ class Nucleon(Particle):
             self.vx *= scale_factor
             self.vy *= scale_factor
         self.update_position()
-
-    def draw(self, surface):
-        import Game
-        label=""
-        if(self.kind == "proton"):
-            color = (255, 80, 80) 
-            label = "P" 
-        else:            
-            color = (80, 80, 255)
-            label = "N"
-        pygame.draw.circle(surface, color,
-                           (int(self.x), int(self.y)), self.radius)
-        text = Game.font.render(label, True, (255, 255, 255))
-        rect = text.get_rect(center=(self.x, self.y))
-        surface.blit(text, rect)

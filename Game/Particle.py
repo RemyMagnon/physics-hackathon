@@ -37,3 +37,4 @@ class Particle:
                 force = (GRAVITY_STRENGTH * strength_multiplier) / (dist ** 2)
                 self.vx += (dx / dist) * force
                 self.vy += (dy / dist) * force
+
