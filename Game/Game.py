@@ -63,14 +63,14 @@ def handle_collisions():
 #    max_force: max acceleration applied per frame
 #    min_distance: distance below which force is capped
 
-def apply_cluster_attraction(nucleaon, particles, max_force=0.05,
+def apply_cluster_attraction(nucleon, particles, max_force=-0.01,
                              min_distance=20):
-    my_cluster = [nucleaon]
+    my_cluster = [nucleon]
     my_center_x = sum(q.x for q in my_cluster) / len(my_cluster)
     my_center_y = sum(q.y for q in my_cluster) / len(my_cluster)
 
     for other in particles:
-        if isinstance(other, Nucleon) and other not in my_cluster:
+        if isinstance(other, Nucleon) and other.kind == "proton" and other not in my_cluster:
             other_cluster = [other]
             other_center_x = sum(q.x for q in other_cluster) / len(
                 other_cluster)
@@ -228,7 +228,7 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        if isinstance(p, Nucleon):
+        if isinstance(p, Nucleon) and p.kind == "proton":
             apply_cluster_attraction(p, particles)
 
     if gravity_active:
