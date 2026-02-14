@@ -143,7 +143,6 @@ class Atom(Particle):
         if not isinstance(a2, Atom):
             return None
         if (a2.type == "atom" or a2.type == "neutron") and (a1.type == "atom" or a1.type == "neutron"):
-            print(a1.id, a2.id)
             try:
                 sum = str(rd.Nuclide(a1.id + a2.id))
             except ValueError:
