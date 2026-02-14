@@ -160,20 +160,20 @@ def check_nucleon_merging():
             if math.hypot(dx, dy) < MERGE_DISTANCE:
                 cluster.append(nucleons[j])
         
-        if len(cluster) >= 2:
+        if len(cluster) == 2:
             group = cluster[:2]
             
-            for q in group:
-                q.destroy = True
-
             # Only consider merging if they are different types (proton vs neutron)
             if group[0].kind != group[1].kind:
-              
+                for q in group:
+                    q.destroy = True
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
                 particles.append(Hydrogen(avg_x, avg_y, num_protons=1, num_neutrons=1))
+            
+            break
 
-        elif len(cluster) >= 3:
+        elif len(cluster) == 3:
             group = cluster[:3]
 
             # Check if group contains 2 protons and 1 neutron
@@ -218,7 +218,7 @@ while running:
     if gravity_active:
         gravity_pos = pygame.mouse.get_pos()
 
-    for p in particles[:]:
+    for p in particles:
         if p.destroy:
             particles.remove(p)
             continue
