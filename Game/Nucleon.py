@@ -1,6 +1,7 @@
 # Updated Nucleon subclass
 import random
 import pygame
+import math
 from Constants import *
 from Particle import Particle
 
@@ -13,6 +14,11 @@ class Nucleon(Particle):
 
     def update(self):
         self.apply_gravity(strength_multiplier=0.6)
+        current_speed = math.hypot(self.vx, self.vy)
+        if current_speed > optimal_speed_quarks:
+            scale_factor = optimal_speed_quarks / current_speed
+            self.vx *= scale_factor
+            self.vy *= scale_factor
         self.update_position()
 
     def draw(self, surface):

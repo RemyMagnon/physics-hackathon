@@ -2,33 +2,24 @@ import random
 import math
 import pygame
 from Constants import *
+from Particle import Particle
 
-class Electron:
+class Electron(Particle):
     def __init__(self):
-        self.x = random.uniform(0, WIDTH)
-        self.y = random.uniform(0, HEIGHT)
-        angle = random.uniform(0, 2*math.pi)
+        super().__init__(radius=ELECTRON_RADIUS)
+        angle = random.uniform(0, 2 * math.pi)
         speed = random.uniform(0.5, 1)
         self.vx = math.cos(angle) * speed
         self.vy = math.sin(angle) * speed
-        self.radius = 5
-        self.destroy = False
 
     def update(self):
-        import Game
-        if Game.gravity_active:
-            dx = Game.gravity_pos[0] - self.x
-            dy = Game.gravity_pos[1] - self.y
-            dist = math.hypot(dx, dy)
-            if dist > 5:
-                force = GRAVITY_STRENGTH / (dist * dist)
-                self.vx += (dx / dist) * force
-                self.vy += (dy / dist) * force
-
-        self.x += self.vx
-        self.y += self.vy
-        self.x %= WIDTH
-        self.y %= HEIGHT
+        self.apply_gravity()
+        current_speed = math.hypot(self.vx, self.vy)
+        if current_speed > optimal_speed_quarks:
+            scale_factor = optimal_speed_quarks / current_speed
+            self.vx *= scale_factor
+            self.vy *= scale_factor
+        self.update_position()
 
     def draw(self, surface):
         import Game
