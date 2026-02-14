@@ -64,10 +64,12 @@ class Atom(Particle):
     def draw(self, surface):
         pass
 
-    def merge(self, other):
-        if not isinstance(other, Atom):
+
+    @staticmethod
+    def merge(a1, a2):
+        if not isinstance(a2, Atom):
             return None
-        sum = str(rd.Nuclide(self.id + other.id))
+        sum = str(rd.Nuclide(a1.id + a2.id))
         str_start = sum.index("Nuclide: ")
         str_end = sum.index(", decay")
         sum = sum[str_start + 9:str_end]
