@@ -11,7 +11,7 @@ atom_full_data = [
     ["Unstable", "611.0 s", 1932,
      "Made of two down quarks and one up quark, free neutrons decay in about 15 minutes."],
     ["Stable", "N/A", 1919,
-     "Composed of a single proton, or two up quarks one adown quark. It is the most abundant atom in the universe."],
+     "Composed of a single proton, or two up quarks and one down quark. It is the most abundant atom in the universe."],
     ["Stable", "N/A", 1931,
      "Also called deuterium, this isotope is used in heavy water for nuclear fusion."],
     ["Unstable", "12.32 y", 1934,
