@@ -152,9 +152,7 @@ atoms_info = [
     "The superstar of medical imaging; used to detect cancer in FDG-PET scans.",
     "The first isotope ever discovered (in 1913); it glows red-orange in signs."
 ]
-
-atoms = [atoms_symbols, atoms_name, atoms_size]
-
+atoms_discovered = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
 
 class Popup:
     def __init__(self, x, y, width, height, title, text, color):
@@ -269,7 +267,6 @@ class Popup:
 
 class Discoveries(Popup):
     def __init__(self, element):
-        self.discovered = False
         index = atoms_symbols.index(element)
         WIDTH = 400
         HEIGHT = 250
