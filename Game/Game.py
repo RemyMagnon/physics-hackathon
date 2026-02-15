@@ -6,6 +6,10 @@ from Quark import Quark
 from Nucleon import Nucleon
 from Atom import Atom, atoms_symbols
 from FusionCards import Discoveries, atoms_discovered
+from collection import show_collection
+import os
+
+os.environ["SDL_AUDIODRIVER"] = "pulse"
 
 pygame.init()
 
@@ -238,10 +242,10 @@ def check_atom_merging():
                         discovered_counter += 1
                         already_merged.remove(already_merged[i])"""
 
-                print("Merged atoms:", name)
+                # print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
-                print("Merged :", name)
+                # print("Merged :", name)
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
@@ -250,7 +254,6 @@ def check_atom_merging():
                     atoms_discovered[atoms_symbols.index(name)] = True
                     new_discovery.is_visible = True
                     popup.append(new_discovery)
-                    print(atoms_discovered)
 
                 for q in group:
                     q.destroy = True
@@ -272,6 +275,11 @@ for _ in range(int(NUM_QUARKS/2)):
 for _ in range(int(NUM_QUARKS / 2)):
     particles.append(Quark("down"))
 
+#------------- COLLECTION --------------
+book_img = pygame.image.load('book.png').convert_alpha()
+book_img = pygame.transform.scale(book_img, (60, 60))
+collection = False
+
 # ---------------- LOOP ----------------
 
 running = True
@@ -292,6 +300,14 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONUP:
             gravity_active = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if the click happened inside the book's rectangle
+            if book_img.get_rect().collidepoint(event.pos):
+                if collection == False:
+                    collection = show_collection(screen)
+                elif collection == True:
+                    collection = not show_collection(screen)
 
         # Camera Controls
         # Zoom in & out
@@ -315,48 +331,56 @@ while running:
 
         clamp_camera()
 
-    if gravity_active:
-        gravity_pos = screen_to_world(pygame.mouse.get_pos())
+    if collection == False:
+        if gravity_active:
+            gravity_pos = screen_to_world(pygame.mouse.get_pos())
 
-    # ---------Creates sound when hold mouse pad-----------
+        # ---------Creates sound when hold mouse pad-----------
 
-    mouse_buttons = pygame.mouse.get_pressed()
+        mouse_buttons = pygame.mouse.get_pressed()
 
-    if mouse_buttons[0]:  # If Left Mouse is held down
-        if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
-            # -1 tells it to loop until we call stop()
-            channel = tone.play(loops=-1)
-    else:
-        # If the mouse is released, stop the sound
-        tone.fadeout(2000)
-        '''if channel:
-            channel.stop()'''
+        if mouse_buttons[0]:  # If Left Mouse is held down
+            if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
+                # -1 tells it to loop until we call stop()
+                channel = tone.play(loops=-1)
+        else:
+            # If the mouse is released, stop the sound
+            tone.fadeout(2000)
+            '''if channel:
+                channel.stop()'''
 
-    for p in particles:
-        if p.destroy:
-            particles.remove(p)
-            continue
-        p.update()
+        for p in particles:
+            if p.destroy:
+                particles.remove(p)
+                continue
+            p.update()
 
-    handle_collisions()
+        for popups in popup:
+            popups.handle_exit(event)
 
-    for p in particles:
-        p.draw(screen)
-        # if isinstance(p, Nucleon) and p.name == "H-1":
-            # apply_cluster_attraction(p, particles)
+        handle_collisions()
 
-    for popups in popup:
-        popups.draw(screen)
+        for p in particles:
+            p.draw(screen)
+            # if isinstance(p, Nucleon) and p.name == "H-1":
+                # apply_cluster_attraction(p, particles)
 
-    if gravity_active:
-        mx, my = world_to_screen(gravity_pos)
-        outer_radius = max(1, int(25 * camera_zoom))
-        inner_radius = max(1, int(10 * camera_zoom))
-        pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
-        pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
+        for popups in popup:
+            popups.draw(screen)
+
+        if gravity_active:
+            mx, my = world_to_screen(gravity_pos)
+            outer_radius = max(1, int(25 * camera_zoom))
+            inner_radius = max(1, int(10 * camera_zoom))
+            pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
+            pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
+
+    if collection == True:
+        show_collection(screen)
 
     check_quarks_merging()
     check_atom_merging()
+    screen.blit(book_img, (20,20))
 
     pygame.display.flip()
 
