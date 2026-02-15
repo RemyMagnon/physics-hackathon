@@ -57,8 +57,7 @@ def world_to_screen(pos):
     return sx, sy
 
 
-def \
-        screen_to_world(pos):
+def screen_to_world(pos):
     sx, sy = pos
     wx = (sx - WIDTH / 2) / camera_zoom + camera_x
     wy = (sy - HEIGHT / 2) / camera_zoom + camera_y
@@ -221,7 +220,7 @@ def check_atom_merging():
             # Only consider merging if they are different types (proton vs neutron)
             name = Atom.merge(group[0], group[1])
             
-            print(name)
+            # print(name)
             if name != None and name in atoms_symbols:
 
                 """for i in range(len(already_merged)):
@@ -231,15 +230,15 @@ def check_atom_merging():
                         discovered_counter += 1
                         already_merged.remove(already_merged[i])"""
 
-                print("Merged atoms:", name)
+                # print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
-                print("Merged :", name)
+                # print("Merged :", name)
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
                 new_discovery = Discoveries(name)
-                if atoms_discovered[atoms_symbols.index(name)] == False:
+                if not atoms_discovered[atoms_symbols.index(name)]:
                     atoms_discovered[atoms_symbols.index(name)] = True
                     new_discovery.is_visible = True
                     popup.append(new_discovery)
@@ -328,7 +327,7 @@ while running:
         p.update()
 
     for popups in popup:
-        popups.handle_event(event)
+        popups.handle_exit(event)
 
     handle_collisions()
 
