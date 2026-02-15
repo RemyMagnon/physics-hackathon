@@ -170,10 +170,8 @@ def apply_cluster_attraction(nucleon, particles, max_force=-0.01, min_distance=2
     for other in particles:
         if isinstance(other, Nucleon) and other.name == "H-1" and other not in my_cluster:
             other_cluster = [other]
-            other_center_x = sum(q.x for q in other_cluster) / len(
-                other_cluster)
-            other_center_y = sum(q.y for q in other_cluster) / len(
-                other_cluster)
+            other_center_x = sum(q.x for q in other_cluster) / len(other_cluster)
+            other_center_y = sum(q.y for q in other_cluster) / len(other_cluster)
 
             dx = other_center_x - my_center_x
             dy = other_center_y - my_center_y
@@ -391,7 +389,7 @@ while running:
             else:
                 follow_mode = True
         # Zoom in & out
-        if event.type == pygame.MOUSEWHEEL:
+        if event.type == pygame.MOUSEWHEEL and not collection:
             if event.y > 0:
                 zoom_at(pygame.mouse.get_pos(), ZOOM_STEP)
             elif event.y < 0:
@@ -410,7 +408,7 @@ while running:
                 else:
                     pygame.mixer.music.pause()
 
-    if follow_mode:
+    if follow_mode and not collection:
         cursor_follow_camera(pygame.mouse.get_pos())
     else:
         camera_x,camera_y = screen_to_world((WIDTH/2,HEIGHT/2))
@@ -446,7 +444,7 @@ while running:
 
     for popups in popup:
         popups.draw(screen)
-    
+
 
     if collection:
         show_collection(screen)
