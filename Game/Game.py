@@ -226,6 +226,9 @@ def check_quarks_merging():
                 avg_x = sum(q.x for q in group) / 3
                 avg_y = sum(q.y for q in group) / 3
 
+                print("Merged quarks: " + group[0].flavor + " and " + group[1].flavor)
+                print("Merged :", name)
+
                 particles.append(Nucleon(name,avg_x, avg_y))
 
                 if name in atoms_symbols:
@@ -243,8 +246,8 @@ def check_quarks_merging():
                 new_quarks = ["up", "down", random.choice(["up", "down"])]
                 for i in range(3):
                     new_q = Quark(new_quarks[i])
-                    new_q.x = random.uniform(-500, 500)
-                    new_q.y = random.uniform(-500, 500)
+                    new_q.x = random.uniform(-WIDTH/2, WIDTH/2)
+                    new_q.y = random.uniform(-HEIGHT/2, HEIGHT/2)
 
                     angle = random.uniform(0, 2 * math.pi)
                     speed = random.uniform(1, 3)
@@ -267,13 +270,12 @@ def check_atom_merging():
             if math.hypot(dx, dy) <= atoms[i].radius + atoms[j].radius:
                 cluster.append(atoms[j])
         
-        if len(cluster) == 2:
+        if len(cluster) >= 2:
             group = cluster[:2]
 
             # Only consider merging if they are different types (proton vs neutron)
             name = Atom.merge(group[0], group[1])
             
-            # print(name)
             if name != None and name in atoms_symbols:
 
                 """for i in range(len(already_merged)):
@@ -283,10 +285,11 @@ def check_atom_merging():
                         discovered_counter += 1
                         already_merged.remove(already_merged[i])"""
 
-                # print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
-                # print("Merged :", name)
+
+                print("Merged atoms: " + group[0].name + " and " + group[1].name)
+                print("Merged :", name)
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 

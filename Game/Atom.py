@@ -250,7 +250,8 @@ class Atom(Particle):
             self.decay()
 
         if self.type == "atom" and self.half_life < float("inf"):
-            print(self.half_life)
+            pass
+            # print(self.half_life)
 
     def draw(self, surface):
         import Game
