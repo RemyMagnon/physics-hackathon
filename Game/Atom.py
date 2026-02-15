@@ -243,7 +243,7 @@ class Atom(Particle):
         if self.half_life <= 0:
             self.decay()
 
-        if self.type == "atom":
+        if self.type == "atom" and self.half_life < float("inf"):
             print(self.half_life)
 
     def draw(self, surface):
