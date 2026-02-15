@@ -240,8 +240,9 @@ def check_quarks_merging():
                     q.destroy = True
 
                 # Spawn exactly three new quarks on merge
-                for _ in range(3):
-                    new_q = Quark(random.choice(["up", "down"]))
+                new_quarks = ["up", "down", random.choice(["up", "down"])]
+                for i in range(3):
+                    new_q = Quark(new_quarks[i])
                     new_q.x = random.uniform(-500, 500)
                     new_q.y = random.uniform(-500, 500)
 
