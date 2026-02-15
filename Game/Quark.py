@@ -4,6 +4,7 @@ import math
 import pygame
 from Constants import *
 from Particle import Particle
+from Atom import atoms_symbols
 
 class Quark(Particle):
     def __init__(self, flavor):
@@ -33,6 +34,10 @@ class Quark(Particle):
         radius = max(1, int(self.radius * Game.camera_zoom))
         pygame.draw.circle(surface, color, (int(sx), int(sy)), radius)
         label = "u" if self.flavor == "up" else "d"
-        text = Game.font.render(label, True, (255, 255, 255))
+
+        font_size = max(8, int(20 * Game.camera_zoom))
+        dynamic_font = pygame.font.SysFont(None, font_size)
+
+        text = dynamic_font.render(label, True, (255, 255, 255))
         rect = text.get_rect(center=(sx, sy))
         surface.blit(text, rect)

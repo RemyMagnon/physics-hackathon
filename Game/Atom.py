@@ -250,7 +250,8 @@ class Atom(Particle):
             self.decay()
 
         if self.type == "atom" and self.half_life < float("inf"):
-            print(self.half_life)
+            pass
+            # print(self.half_life)
 
     def draw(self, surface):
         import Game
@@ -272,7 +273,7 @@ class Atom(Particle):
         dynamic_font = pygame.font.SysFont(None, font_size)
 
         text = dynamic_font.render(atoms_symbols[self.index], True, color)
-        rect = text.get_rect(center=(sx, sy))
+        rect = text.get_rect(center=(sx+x_offset, sy+y_offset))
         surface.blit(text, rect)
     
     def _generate_label(self):
