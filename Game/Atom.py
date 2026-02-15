@@ -315,6 +315,9 @@ class Atom(Particle):
                 return None
             str_start = sum.index("Nuclide: ")
             str_end = sum.index(", decay")
+            import Game
+            Game.remove_atom(a1)
+            Game.remove_atom(a2)
             return sum[str_start + 9:str_end]
         else:
             print("Not an atom or neutron!")
