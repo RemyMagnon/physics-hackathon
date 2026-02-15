@@ -14,7 +14,7 @@ pygame.init()
 
 pygame.mixer.init()
 tone = pygame.mixer.Sound("100hz_tone.wav")
-tone.set_volume(1)
+tone.set_volume(1.0)
 channel = None  # We'll use a specific channel to control the sound
 
 #Background music
