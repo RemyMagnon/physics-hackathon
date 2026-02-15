@@ -4,7 +4,7 @@ import math
 from Constants import *
 
 class Particle:
-    def __init__(self, x=None, y=None, radius=7):
+    def __init__(self, x=None, y=None, radius=8):
         if x is not None:
             self.x = x
         else:

@@ -73,10 +73,10 @@ atoms_name = [
 
 
 atoms_size = [
-    2.0,
-    2.0,
-    6.0,
-    6.2,
+    1.0,
+    1.0,
+    4.0,
+    4.2,
     10.7,
     8.8,
     9.85,
@@ -249,7 +249,7 @@ class Atom(Particle):
 
     def draw(self, surface):
         import Game
-        pygame.draw.circle(surface, atoms_color[self.index], (int(self.x), int(self.y)), atoms_size[self.index])
+        pygame.draw.circle(surface, atoms_color[self.index], (int(self.x), int(self.y)), atoms_size[self.index] * 2)
         text = Game.font.render(atoms_symbols[self.index], True, (255, 255, 255))
         rect = text.get_rect(center=(self.x, self.y))
         surface.blit(text, rect)

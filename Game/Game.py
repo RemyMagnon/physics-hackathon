@@ -134,7 +134,7 @@ def check_quarks_merging():
 
                 # Spawn exactly three new quarks on merge
                 for _ in range(3):
-                    new_q = Quark()
+                    new_q = Quark(random.choice(["up", "down"]))
                     new_q.x = random.uniform(-500, 500)
                     new_q.y = random.uniform(-500, 500)
 
@@ -176,7 +176,7 @@ def check_atom_merging():
                 print("Merged :", name)
                 try:
                     particles.append(Atom(name, avg_x, avg_y, 10))
-                except ValueError:
+                except:
                     print("Failed to create atom:", name)
                 for q in group:
                     q.destroy = True
@@ -187,8 +187,10 @@ def add_atom(name, x, y, radius):
     particles.append(Atom(name, x, y, radius))
 
 # ---------------- INIT ----------------
-for _ in range(NUM_QUARKS):
-    particles.append(Quark())
+for _ in range(int(NUM_QUARKS/2)):
+    particles.append(Quark("up"))
+for _ in range(int(NUM_QUARKS / 2)):
+    particles.append(Quark("down"))
 
 # ---------------- LOOP ----------------
 

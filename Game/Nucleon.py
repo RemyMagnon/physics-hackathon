@@ -6,6 +6,7 @@ from Atom import Atom
 
 class Nucleon(Atom):
     def __init__(self,name, x, y):
+        print("Nucleon created")
         super().__init__(name,x, y, radius=NUCLEON_RADIUS)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
