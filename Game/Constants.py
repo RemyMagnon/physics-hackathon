@@ -1,6 +1,6 @@
 #====== Window Info =====
-WIDTH = 1000
-HEIGHT = 700
+WIDTH = 1500
+HEIGHT = 800
 
 #====== Border Info =====
 #The Radius is only 40% of the height
@@ -9,7 +9,7 @@ OUTER_BORDER_RADIUS = BORDER_RADIUS * 9.
 BORDER_COLOR = (200,250,250)
 
 BORDER_THICKNESS = 20
-OUTER_BORDER_THICKNESS = 5200
+OUTER_BORDER_THICKNESS = 4160
 
 # ===== PARTICLE SIZES =====
 GRAVITY_STRENGTH = 120
