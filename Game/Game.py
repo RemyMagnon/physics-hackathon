@@ -23,7 +23,7 @@ pygame.mixer.music.set_volume(0.15)
 pygame.mixer.music.play(-1)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
+pygame.display.set_caption("Journey to the 10th Element")
 
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 22)
