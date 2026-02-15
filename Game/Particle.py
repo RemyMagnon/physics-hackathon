@@ -71,7 +71,7 @@ class Particle:
             dy = Game.gravity_pos[1] - self.y
             dist = math.hypot(dx, dy)
             if dist > 5:
-                force = (GRAVITY_STRENGTH * strength_multiplier) / (dist ** 2)
+                force = (GRAVITY_STRENGTH * strength_multiplier) * GRAVITY(dist)
                 self.vx += (dx / dist) * force
                 self.vy += (dy / dist) * force
 

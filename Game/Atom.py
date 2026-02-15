@@ -211,8 +211,8 @@ class Atom(Particle):
             self.id = 10000
             self.proton_number = 0
             self.neutron_number = 0
-            self.half_life = float("inf")
-            self.decays_into = []
+            self.half_life = 20
+            self.decays_into = ["p"]
             self.decay_type = []
             self.info = "Placeholder text."
             self.index = atoms_symbols.index(name)
