@@ -6,6 +6,9 @@ from Quark import Quark
 from Nucleon import Nucleon
 from Atom import Atom, atoms_symbols
 from FusionCards import Discoveries, atoms_discovered
+import os
+
+os.environ["SDL_AUDIODRIVER"] = "pulse"
 
 pygame.init()
 
