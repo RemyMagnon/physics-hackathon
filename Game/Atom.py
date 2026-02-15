@@ -172,7 +172,6 @@ atoms_label = [
 
 class Atom(Particle):
     def __init__(self, name, x, y, radius):
-        super().__init__(x, y, radius)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
         self.name = name
@@ -189,6 +188,7 @@ class Atom(Particle):
             self.decay_type = []
             self.info = "Placeholder text."
             self.index = atoms_symbols.index(name)
+
         elif name == "d":
             self.type = "quark"
             self.identity = "down quark"
@@ -222,6 +222,7 @@ class Atom(Particle):
             self.info = "Placeholder text."
             self.index = atoms_symbols.index(name)
             self.half_life = np.log(self.identity.half_life())
+        super().__init__(x, y, atoms_size[self.index] * 3)
 
     def decay(self):
         if len(self.decays_into) > 0:
@@ -255,9 +256,13 @@ class Atom(Particle):
             x_offset = random.randint(-10, 10) * (np.exp(-self.half_life)+0.1)
             y_offset = random.randint(-10, 10) * (np.exp(-self.half_life)+0.1)
         sx, sy = Game.world_to_screen((self.x, self.y))
-        radius = max(1, int(atoms_size[self.index] * 2 * Game.camera_zoom))
+        radius = max(1, int(atoms_size[self.index] * 3 * Game.camera_zoom))
         pygame.draw.circle(surface, atoms_color[self.index], (int(sx+x_offset), int(sy+y_offset)), radius)
-        text = Game.font.render(atoms_symbols[self.index], True, (210, 210, 210))
+        if atoms_color[self.index][0] + atoms_color[self.index][1] + atoms_color[self.index][2] < 400:
+            color = (255, 255, 255)
+        else:
+            color = (0, 0, 0)
+        text = Game.font.render(atoms_symbols[self.index], True, color)
         rect = text.get_rect(center=(sx, sy))
         surface.blit(text, rect)
     

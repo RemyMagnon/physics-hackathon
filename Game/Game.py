@@ -9,9 +9,9 @@ from FusionCards import Discoveries, atoms_discovered
 
 pygame.init()
 
-#pygame.mixer.init()
-#tone = pygame.mixer.Sound("100hz_tone.wav")
-#channel = None  # We'll use a specific channel to control the sound
+pygame.mixer.init()
+tone = pygame.mixer.Sound("100hz_tone.wav")
+channel = None  # We'll use a specific channel to control the sound
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
@@ -212,7 +212,7 @@ def check_atom_merging():
         for j in range(len(atoms)):
             dx = atoms[i].x - atoms[j].x
             dy = atoms[i].y - atoms[j].y
-            if math.hypot(dx, dy) < MERGE_DISTANCE + 30:
+            if math.hypot(dx, dy) < atoms[i].radius + atoms[j].radius + 30:
                 cluster.append(atoms[j])
         
         if len(cluster) == 2:
@@ -223,6 +223,13 @@ def check_atom_merging():
             
             print(name)
             if name != None and name in atoms_symbols:
+
+                """for i in range(len(already_merged)):
+                    if name == already_merged[i]:
+                        # turn color of the grid into green
+                        global discovered_counter
+                        discovered_counter += 1
+                        already_merged.remove(already_merged[i])"""
 
                 print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
@@ -244,7 +251,8 @@ def check_atom_merging():
 
 @staticmethod
 def add_atom(name, x, y, radius):
-    particles.append(Atom(name, x, y, radius))
+    if name in atoms_symbols:
+        particles.append(Atom(name, x, y, radius))
 
 @staticmethod
 def remove_atom(atom):
@@ -301,24 +309,24 @@ while running:
 
     # ---------Creates sound when hold mouse pad-----------
 
-    #mouse_buttons = pygame.mouse.get_pressed()
+    mouse_buttons = pygame.mouse.get_pressed()
 
-    #if mouse_buttons[0]:  # If Left Mouse is held down
-    #    if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
-    #        # -1 tells it to loop until we call stop()
-    #        channel = tone.play(loops=-1)
-    #else:
-    #    # If the mouse is released, stop the sound
-    #    tone.fadeout(2000)
-    #    '''if channel:
-    #        channel.stop()'''
+    if mouse_buttons[0]:  # If Left Mouse is held down
+        if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
+            # -1 tells it to loop until we call stop()
+            channel = tone.play(loops=-1)
+    else:
+        # If the mouse is released, stop the sound
+        tone.fadeout(2000)
+        '''if channel:
+            channel.stop()'''
 
     for p in particles:
         if p.destroy:
             particles.remove(p)
             continue
         p.update()
-    
+
     for popups in popup:
         popups.handle_event(event)
 
@@ -326,9 +334,9 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        if isinstance(p, Nucleon) and p.name == "H-1":
-            apply_cluster_attraction(p, particles)
-    
+        # if isinstance(p, Nucleon) and p.name == "H-1":
+            # apply_cluster_attraction(p, particles)
+
     for popups in popup:
         popups.draw(screen)
 
