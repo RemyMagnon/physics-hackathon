@@ -4,7 +4,7 @@ import math
 from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
-from Atom import Atom
+from Atom import Atom, atoms_symbols
 
 pygame.init()
 
@@ -161,27 +161,25 @@ def check_atom_merging():
         
         if len(cluster) == 2:
             group = cluster[:2]
-           
-            
+
             # Only consider merging if they are different types (proton vs neutron)
             name = Atom.merge(group[0], group[1])
             
             print(name)
-            if(name != None):   
-             
+            if name != None and name in atoms_symbols:
 
                 print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
                 print("Merged :", name)
-                try:
-                    particles.append(Atom(name, avg_x, avg_y, 10))
-                except:
-                    print("Failed to create atom:", name)
+
+                particles.append(Atom(name, avg_x, avg_y, 10))
+
                 for q in group:
                     q.destroy = True
             
             break
+
 @staticmethod
 def add_atom(name, x, y, radius):
     particles.append(Atom(name, x, y, radius))
