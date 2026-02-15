@@ -224,8 +224,8 @@ def check_quarks_merging():
                 avg_x = sum(q.x for q in group) / 3
                 avg_y = sum(q.y for q in group) / 3
 
-                print("Merged quarks: " + group[0].flavor + " and " + group[1].flavor)
-                print("Merged :", name)
+                #print("Merged quarks: " + group[0].flavor + " and " + group[1].flavor)
+                #print("Merged :", name)
 
                 particles.append(Nucleon(name,avg_x, avg_y))
 
@@ -286,8 +286,8 @@ def check_atom_merging():
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
 
-                print("Merged atoms: " + group[0].name + " and " + group[1].name)
-                print("Merged :", name)
+                #print("Merged atoms: " + group[0].name + " and " + group[1].name)
+                #print("Merged :", name)
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
