@@ -5,7 +5,7 @@ from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
 from Atom import Atom, atoms_symbols
-from FusionCards import Discoveries
+from FusionCards import Discoveries, atoms_discovered
 
 pygame.init()
 
@@ -232,9 +232,9 @@ def check_atom_merging():
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
                 new_discovery = Discoveries(name)
-                if new_discovery.discovered == False:
+                if atoms_discovered[atoms_symbols.index(name)] == False:
+                    atoms_discovered[atoms_symbols.index(name)] = True
                     new_discovery.is_visible = True
-                    new_discovery.discovered = True
                     popup.append(new_discovery)
 
                 for q in group:
