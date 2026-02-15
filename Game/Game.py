@@ -5,12 +5,13 @@ from Constants import *
 from Quark import Quark
 from Nucleon import Nucleon
 from Atom import Atom, atoms_symbols
+from FusionCards import Discoveries
 
 pygame.init()
 
-pygame.mixer.init()
-tone = pygame.mixer.Sound("100hz_tone.wav")
-channel = None  # We'll use a specific channel to control the sound
+#pygame.mixer.init()
+#tone = pygame.mixer.Sound("100hz_tone.wav")
+#channel = None  # We'll use a specific channel to control the sound
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
@@ -19,6 +20,7 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 22)
 
 particles = []
+popup = []
 gravity_active = False
 gravity_pos = (0, 0)
 
@@ -229,6 +231,12 @@ def check_atom_merging():
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
+                new_discovery = Discoveries(name)
+                if new_discovery.discovered == False:
+                    new_discovery.is_visible = True
+                    new_discovery.discovered = True
+                    popup.append(new_discovery)
+
                 for q in group:
                     q.destroy = True
             
@@ -293,23 +301,26 @@ while running:
 
     # ---------Creates sound when hold mouse pad-----------
 
-    mouse_buttons = pygame.mouse.get_pressed()
+    #mouse_buttons = pygame.mouse.get_pressed()
 
-    if mouse_buttons[0]:  # If Left Mouse is held down
-        if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
-            # -1 tells it to loop until we call stop()
-            channel = tone.play(loops=-1)
-    else:
-        # If the mouse is released, stop the sound
-        tone.fadeout(2000)
-        '''if channel:
-            channel.stop()'''
+    #if mouse_buttons[0]:  # If Left Mouse is held down
+    #    if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
+    #        # -1 tells it to loop until we call stop()
+    #        channel = tone.play(loops=-1)
+    #else:
+    #    # If the mouse is released, stop the sound
+    #    tone.fadeout(2000)
+    #    '''if channel:
+    #        channel.stop()'''
 
     for p in particles:
         if p.destroy:
             particles.remove(p)
             continue
         p.update()
+    
+    for popups in popup:
+        popups.handle_event(event)
 
     handle_collisions()
 
@@ -317,6 +328,9 @@ while running:
         p.draw(screen)
         if isinstance(p, Nucleon) and p.name == "H-1":
             apply_cluster_attraction(p, particles)
+    
+    for popups in popup:
+        popups.draw(screen)
 
     if gravity_active:
         mx, my = world_to_screen(gravity_pos)
