@@ -28,7 +28,7 @@ class Quark(Particle):
 
     def draw(self, surface):
         import Game
-        color = (255, 100, 100) if self.flavor == "up" else (100, 150, 255)
+        color = (255, 50, 50) if self.flavor == "up" else (50, 50, 255)
         sx, sy = Game.world_to_screen((self.x, self.y))
         radius = max(1, int(self.radius * Game.camera_zoom))
         pygame.draw.circle(surface, color, (int(sx), int(sy)), radius)

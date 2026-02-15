@@ -4,11 +4,8 @@ from Atom import *
 from FusionCards import atoms_discovered
 
 
-
-
 def show_collection(screen):
     background = pygame.draw.rect(screen, (0, 0, 0), (WIDTH - 400, 0, 400, HEIGHT))
-
 
     title_font = pygame.font.SysFont('Verdana', 40, bold=True)
     font = pygame.font.SysFont('Arial', 18)
@@ -24,14 +21,14 @@ def show_collection(screen):
     for atom in atoms_name:
         if atom == "Up quark" or atom == "Down quark":
             continue
-        if atom == "Neutron":
+        """if atom == "Neutron":
             check_img = pygame.image.load('checkmark.png').convert_alpha()
             check_img = pygame.transform.scale(check_img, (30, 30))
             screen.blit(check_img, (WIDTH-250, 85 + 20*(atoms_name.index(atom))))
         if atom == "Hydrogen-1":
             check_img = pygame.image.load('checkmark.png').convert_alpha()
             check_img = pygame.transform.scale(check_img, (30, 30))
-            screen.blit(check_img, (WIDTH-50, 85 + 20*(atoms_name.index(atom)-1)))
+            screen.blit(check_img, (WIDTH-50, 85 + 20*(atoms_name.index(atom)-1)))"""
 
 
         if atom == "Neon-20":
@@ -64,8 +61,5 @@ def show_collection(screen):
                 check_img = pygame.image.load('checkmark.png').convert_alpha()
                 check_img = pygame.transform.scale(check_img, (30, 30))
                 screen.blit(check_img, (WIDTH-50, 85 + 20*(i-1)))
-
-
-
 
     return True

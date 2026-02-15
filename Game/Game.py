@@ -9,7 +9,7 @@ from FusionCards import Discoveries, atoms_discovered
 from collection import show_collection
 import os
 
-os.environ["SDL_AUDIODRIVER"] = "pulse"
+# os.environ["SDL_AUDIODRIVER"] = "pulse"
 
 pygame.init()
 
@@ -304,9 +304,9 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Check if the click happened inside the book's rectangle
             if book_img.get_rect().collidepoint(event.pos):
-                if collection == False:
+                if not collection:
                     collection = show_collection(screen)
-                elif collection == True:
+                elif collection:
                     collection = not show_collection(screen)
 
         # Camera Controls
@@ -331,7 +331,9 @@ while running:
 
         clamp_camera()
 
-    if collection == False:
+    if collection:
+        show_collection(screen)
+    else:
         if gravity_active:
             gravity_pos = screen_to_world(pygame.mouse.get_pos())
 
@@ -354,16 +356,11 @@ while running:
                 particles.remove(p)
                 continue
             p.update()
-
-        for popups in popup:
-            popups.handle_exit(event)
-
-        handle_collisions()
-
-        for p in particles:
             p.draw(screen)
             # if isinstance(p, Nucleon) and p.name == "H-1":
                 # apply_cluster_attraction(p, particles)
+
+        handle_collisions()
 
         for popups in popup:
             popups.draw(screen)
@@ -374,9 +371,6 @@ while running:
             inner_radius = max(1, int(10 * camera_zoom))
             pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
             pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
-
-    if collection == True:
-        show_collection(screen)
 
     check_quarks_merging()
     check_atom_merging()
