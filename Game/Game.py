@@ -299,7 +299,8 @@ def check_atom_merging():
 
                 for q in group:
                     q.destroy = True
-            
+                    remove_atom(q)
+
             break
 
 @staticmethod
