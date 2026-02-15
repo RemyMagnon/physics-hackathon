@@ -365,7 +365,7 @@ while running:
         
         #reset the camera zoom
         if keys[pygame.K_r]:
-            camera_zoom = default_zoom
+            camera_zoom = DEFAULT_ZOOM
         
         #toggle between wether the camera follows your mouse or not
         if keys[pygame.K_f]:
