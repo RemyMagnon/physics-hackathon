@@ -3,43 +3,75 @@ from Atom import *
 import radioactivedecay as rd
 from Constants import *
 
-
-atoms_info = [
-    "The lightest of all quarks; it makes protons stable.",
-    "Slightly heavier than the Up quark; it helps make neutrons.",
-    "Free neutrons decay in about 15 minutes, but are stable in atoms.",
-    "The most abundant atom in the universe (99.98% of hydrogen).",
-    "Also called Deuterium; it is stable and used in nuclear fusion.",
-    "Also called Tritium; it is radioactive and makes watch hands glow.",
-    "Extremely rare on Earth but abundant on the Moon; a potential future fuel.",
-    "An Alpha particle! It makes balloons float and voices squeaky.",
-    "Used in lithium-ion batteries and to breed tritium for fusion.",
-    "Created in the Big Bang; it makes up 92% of all lithium.",
-    "It decays by 'eating' one of its own electrons (electron capture).",
-    "It is great at absorbing neutrons, so it is used in nuclear control rods.",
-    "A rare isotope found in ice cores that helps track solar activity.",
-    "It is transparent to neutrons and makes up 80% of natural boron.",
-    "A very short-lived isotope that turns into Boron in just 19 seconds.",
-    "Used in PET scans to visualize the human brain.",
-    "Used in heart imaging to measure blood flow.",
-    "A rare, short-lived oxygen that helps power stars in the CNO cycle.",
-    "The standard! One 'atomic mass unit' is defined as 1/12th of this atom.",
-    "Unlike C-12, this carbon is magnetic and used in chemical analysis (NMR).",
-    "Radiocarbon! It is used to date ancient artifacts and fossils.",
-    "The main ingredient of Earth's atmosphere (about 99.6% of nitrogen).",
-    "Stable and rare, it is used as a tracer in biology and to study proteins with NMR.",
-    "A 'double magic' nucleus, making it incredibly stable and abundant.",
-    "Used in medical scans to measure oxygen use in the brain.",
-    "A rare, heavy oxygen used to study how plants use water.",
-    "Climate thermometer! Its ratio in ice tells us about ancient temperatures.",
-    "The only stable isotope of fluorine; essentially 100% of natural fluorine.",
-    "The superstar of medical imaging; used to detect cancer in FDG-PET scans.",
-    "The first isotope ever discovered (in 1913); it glows red-orange in signs."
+atom_full_data = [
+    ["Stable", "N/A", 1964,
+     "The lightest of all quarks; it makes protons stable."],
+    ["Stable", "N/A", 1964,
+     "Slightly heavier than the Up quark; it helps make neutrons."],
+    ["Unstable", "611.0 s", 1932,
+     "Free neutrons decay in about 15 minutes, but are stable in atoms."],
+    ["Stable", "N/A", 1919,
+     "The most abundant atom in the universe (99.98% of hydrogen)."],
+    ["Stable", "N/A", 1931,
+     "Also called Deuterium; it is stable and used in nuclear fusion."],
+    ["Unstable", "12.32 y", 1934,
+     "Also called Tritium; it is radioactive and makes watch hands glow."],
+    ["Stable", "N/A", 1939,
+     "Extremely rare on Earth but abundant on the Moon; a potential future fuel."],
+    ["Stable", "N/A", 1895,
+     "An Alpha particle! It makes balloons float and voices squeaky."],
+    ["Stable", "N/A", 1921,
+     "Used in lithium-ion batteries and to breed tritium for fusion."],
+    ["Stable", "N/A", 1921,
+     "Created in the Big Bang; it makes up 92% of all lithium."],
+    ["Unstable", "53.22 d", 1938,
+     "It decays by 'eating' one of its own electrons (electron capture)."],
+    ["Stable", "N/A", 1920,
+     "It is great at absorbing neutrons, so it is used in nuclear control rods."],
+    ["Unstable", "1.39 My", 1947,
+     "A rare isotope found in ice cores that helps track solar activity."],
+    ["Stable", "N/A", 1920,
+     "It is transparent to neutrons and makes up 80% of natural boron."],
+    ["Unstable", "19.3 s", 1949,
+     "A very short-lived isotope that turns into Boron in just 19 seconds."],
+    ["Unstable", "20.34 m", 1934,
+     "Used in PET scans to visualize the human brain."],
+    ["Unstable", "9.97 m", 1934,
+     "Used in heart imaging to measure blood flow."],
+    ["Unstable", "70.62 s", 1949,
+     "A rare, short-lived oxygen that helps power stars in the CNO cycle."],
+    ["Stable", "N/A", 1919,
+     "The standard! One 'atomic mass unit' is defined as 1/12th of this atom."],
+    ["Stable", "N/A", 1929,
+     "Unlike C-12, this carbon is magnetic and used in chemical analysis (NMR)."],
+    ["Unstable", "5700 y", 1940,
+     "Radiocarbon! It is used to date ancient artifacts and fossils."],
+    ["Stable", "N/A", 1919,
+     "The main ingredient of Earth's atmosphere (about 99.6% of nitrogen)."],
+    ["Stable", "N/A", 1930,
+     "Stable and rare, it is used as a tracer in biology and to study proteins with NMR."],
+    ["Stable", "N/A", 1919,
+     "A 'double magic' nucleus, making it incredibly stable and abundant."],
+    ["Unstable", "122.2 s", 1934,
+     "Used in medical scans to measure oxygen use in the brain."],
+    ["Stable", "N/A", 1929,
+     "A rare, heavy oxygen used to study how plants use water."],
+    ["Stable", "N/A", 1929,
+     "Climate thermometer! Its ratio in ice tells us about ancient temperatures."],
+    ["Stable", "N/A", 1920,
+     "The only stable isotope of fluorine; essentially 100% of natural fluorine."],
+    ["Unstable", "109.7 m", 1937,
+     "The superstar of medical imaging; used to detect cancer in FDG-PET scans."],
+    ["Stable", "N/A", 1913,
+     "The first isotope ever discovered (in 1913); it glows red-orange in signs."]
 ]
+
 atoms_discovered = [False] * 30
 
+
 class Popup:
-    def __init__(self, x, y, width, height, title, text, color):
+    def __init__(self, x, y, width, height, title, text, stability, halflife,
+                 year, color):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = (200, 200, 200)  # Light Gray
         self.title = title
@@ -54,8 +86,13 @@ class Popup:
                                        self.rect.y + self.header_height / 4,
                                        20, 20)
 
-        self.title_font = pygame.font.SysFont(TITLE_FONT, TITLE_FONT_SIZE, bold=True)
+        self.title_font = pygame.font.SysFont(TITLE_FONT, TITLE_FONT_SIZE,
+                                              bold=True)
         self.font = pygame.font.SysFont(TEXT_FONT, TEXT_FONT_SIZE)
+
+        self.stability = stability
+        self.halflife = halflife
+        self.year = year
 
     def get_wrapped_lines(self):
         words = self.text.split(' ')
@@ -99,12 +136,34 @@ class Popup:
                                              (255, 255, 255))
                 # Position each line based on its index
                 line_y = self.rect.y + self.header_height + self.padding + (
-                            i * self.line_spacing)
+                        i * self.line_spacing)
 
                 # Check to make sure we don't draw outside the box bottom
                 if line_y < self.rect.bottom - self.padding:
                     screen.blit(line_surf,
                                 (self.rect.x + self.padding, line_y))
+
+            # ... (after your existing for loop that renders lines) ...
+
+            # 1. Get the starting Y position for the extra data
+            # We'll put it 2 lines below the last line of the main text
+            current_data_y = line_y + (self.line_spacing * 2)
+
+            extra_info = [
+                f"Stability: {self.stability}",
+                f"Half-life: {self.halflife}",
+                f"Discovered: {self.year}"
+            ]
+
+            # 3. Draw the extra lines
+            for j, info_text in enumerate(extra_info):
+                # We use a slightly different color (e.g., light blue) to make it look like "data"
+                info_surf = self.font.render(info_text, True, (180, 255, 255))
+                info_y = current_data_y + (j * self.line_spacing)
+
+                if info_y < self.rect.bottom - self.padding:
+                    screen.blit(info_surf,
+                                (self.rect.x + self.padding, info_y))
 
             # Title box
 
@@ -155,16 +214,13 @@ class Discoveries(Popup):
         HEIGHT = 250
         if x == None and y == None:
             super().__init__((WIDTH * 2.4), (HEIGHT * 0.2), WIDTH, HEIGHT,
-                            atoms_name[index], atoms_info[index],
-                            atoms_color[index])
-        else: 
+                             atoms_name[index], atom_full_data[index][3],
+                             atom_full_data[index][0],
+                             atom_full_data[index][1],
+                             atom_full_data[index][2], atoms_color[index])
+        else:
             super().__init__(x, y, WIDTH, HEIGHT,
-                            atoms_name[index], atoms_info[index],
-                            atoms_color[index]) 
-
-
-
-
-
-
-
+                             atoms_name[index], atom_full_data[index][3],
+                             atom_full_data[index][0],
+                             atom_full_data[index][1],
+                             atom_full_data[index][2], atoms_color[index])

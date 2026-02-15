@@ -34,6 +34,7 @@ def show_collection(screen):
                 check_img = pygame.image.load('checkmark.png').convert_alpha()
                 check_img = pygame.transform.scale(check_img, (90, 90))
                 screen.blit(check_img, (WIDTH-100, 130 + 20*i))
+                badges_rects[i] = text_rect
                 
             continue
 
