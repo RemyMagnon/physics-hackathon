@@ -399,46 +399,49 @@ while running:
         camera_x,camera_y = screen_to_world((WIDTH/2,HEIGHT/2))
     clamp_camera()
 
+
+    if gravity_active:
+        gravity_pos = screen_to_world(pygame.mouse.get_pos())
+
+    # ---------Creates sound when hold mouse pad-----------
+
+    mouse_buttons = pygame.mouse.get_pressed()
+
+    if mouse_buttons[0]:  # If Left Mouse is held down
+        if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
+            # -1 tells it to loop until we call stop()
+            channel = tone.play(loops=-1)
+    else:
+        # If the mouse is released, stop the sound
+        tone.fadeout(500)
+        '''if channel:
+            channel.stop()'''
+
+    for p in particles:
+        if p.destroy:
+            particles.remove(p)
+            continue
+        p.draw(screen)
+        # if isinstance(p, Nucleon) and p.name == "H-1":
+            # apply_cluster_attraction(p, particles)
+
+    handle_collisions()
+
+    for popups in popup:
+        popups.draw(screen)
+
+    if gravity_active:
+        mx, my = world_to_screen(gravity_pos)
+        outer_radius = max(1, int(25 * camera_zoom))
+        inner_radius = max(1, int(10 * camera_zoom))
+        pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
+        pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
+
     if collection:
         show_collection(screen)
     else:
-        if gravity_active:
-            gravity_pos = screen_to_world(pygame.mouse.get_pos())
-
-        # ---------Creates sound when hold mouse pad-----------
-
-        mouse_buttons = pygame.mouse.get_pressed()
-
-        if mouse_buttons[0]:  # If Left Mouse is held down
-            if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
-                # -1 tells it to loop until we call stop()
-                channel = tone.play(loops=-1)
-        else:
-            # If the mouse is released, stop the sound
-            tone.fadeout(500)
-            '''if channel:
-                channel.stop()'''
-
         for p in particles:
-            if p.destroy:
-                particles.remove(p)
-                continue
             p.update()
-            p.draw(screen)
-            # if isinstance(p, Nucleon) and p.name == "H-1":
-                # apply_cluster_attraction(p, particles)
-
-        handle_collisions()
-
-        for popups in popup:
-            popups.draw(screen)
-
-        if gravity_active:
-            mx, my = world_to_screen(gravity_pos)
-            outer_radius = max(1, int(25 * camera_zoom))
-            inner_radius = max(1, int(10 * camera_zoom))
-            pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
-            pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
 
     check_quarks_merging()
     check_atom_merging()
