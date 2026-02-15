@@ -1,6 +1,7 @@
 import pygame
 from Atom import Atom
 import radioactivedecay as rd
+from Constants import *
 
 atoms_symbols = ["u",
                  "d",
@@ -161,7 +162,6 @@ class Popup:
         self.title = title
         self.text = text
         self.is_visible = False
-        self.font = pygame.font.SysFont('Arial', 24)
         self.line_spacing = 30
         self.padding = 15
         self.color = color
@@ -171,8 +171,8 @@ class Popup:
                                        self.rect.y + self.header_height / 4,
                                        20, 20)
 
-        self.title_font = pygame.font.SysFont('Verdana', 24, bold=True)
-        self.font = pygame.font.SysFont('Arial', 18)
+        self.title_font = pygame.font.SysFont(TITLE_FONT, TITLE_FONT_SIZE, bold=True)
+        self.font = pygame.font.SysFont(TEXT_FONT, TEXT_FONT_SIZE)
 
     def get_wrapped_lines(self):
         words = self.text.split(' ')
