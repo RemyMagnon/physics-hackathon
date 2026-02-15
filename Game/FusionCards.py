@@ -257,7 +257,7 @@ class Popup:
     def toggle(self):
         self.is_visible = not self.is_visible
 
-    def handle_event(self, event):
+    def handle_exit(self, event):
         if self.is_visible and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left click only
                 # Check if the click position is inside your exit_square
