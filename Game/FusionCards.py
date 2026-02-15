@@ -27,7 +27,7 @@ atom_full_data = [
     ["Unstable", "53.22 d", 1938,
      "The smallest element that decays via electron capture."],
     ["Stable", "N/A", 1920,
-     f"Also called {"enriched boron"}, this element is used to capture neutrons."],
+     "Also called enriched boron, this element is used to capture neutrons."],
     ["Unstable", "1.39 My", 1947,
      "A rare isotope found in ice cores that helps track solar activity."],
     ["Stable", "N/A", 1920,
