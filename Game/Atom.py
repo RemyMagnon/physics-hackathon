@@ -225,10 +225,9 @@ class Atom(Particle):
 
     def decay(self):
         if len(self.decays_into) > 0:
-            self.destroy = True
-
             import Game
             Game.add_atom(self.decays_into[0], self.x, self.y, self.radius)
+            Game.remove_atom(self)
 
     def update(self):
         self.apply_gravity(strength_multiplier=0.85)
@@ -249,9 +248,17 @@ class Atom(Particle):
 
     def draw(self, surface):
         import Game
-        pygame.draw.circle(surface, atoms_color[self.index], (int(self.x), int(self.y)), atoms_size[self.index] * 2)
-        text = Game.font.render(atoms_symbols[self.index], True, (255, 255, 255))
-        rect = text.get_rect(center=(self.x, self.y))
+        if self.half_life == float('inf'):
+            x_offset = 0
+            y_offset = 0
+        else:
+            x_offset = random.randint(-10, 10) * (np.exp(-self.half_life)+0.1)
+            y_offset = random.randint(-10, 10) * (np.exp(-self.half_life)+0.1)
+        sx, sy = Game.world_to_screen((self.x, self.y))
+        radius = max(1, int(atoms_size[self.index] * 2 * Game.camera_zoom))
+        pygame.draw.circle(surface, atoms_color[self.index], (int(sx+x_offset), int(sy+y_offset)), radius)
+        text = Game.font.render(atoms_symbols[self.index], True, (210, 210, 210))
+        rect = text.get_rect(center=(sx, sy))
         surface.blit(text, rect)
     
     def _generate_label(self):

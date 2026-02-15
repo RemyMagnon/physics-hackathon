@@ -29,8 +29,10 @@ class Quark(Particle):
     def draw(self, surface):
         import Game
         color = (255, 100, 100) if self.flavor == "up" else (100, 150, 255)
-        pygame.draw.circle(surface, color, (int(self.x), int(self.y)), self.radius)
+        sx, sy = Game.world_to_screen((self.x, self.y))
+        radius = max(1, int(self.radius * Game.camera_zoom))
+        pygame.draw.circle(surface, color, (int(sx), int(sy)), radius)
         label = "u" if self.flavor == "up" else "d"
         text = Game.font.render(label, True, (255, 255, 255))
-        rect = text.get_rect(center=(self.x, self.y))
+        rect = text.get_rect(center=(sx, sy))
         surface.blit(text, rect)

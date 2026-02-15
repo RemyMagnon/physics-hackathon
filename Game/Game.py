@@ -8,6 +8,10 @@ from Atom import Atom, atoms_symbols
 
 pygame.init()
 
+pygame.mixer.init()
+tone = pygame.mixer.Sound("100hz_tone.wav")
+channel = None  # We'll use a specific channel to control the sound
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
 
@@ -18,6 +22,56 @@ particles = []
 gravity_active = False
 gravity_pos = (0, 0)
 
+#camera information
+camera_zoom = 1.0
+ZOOM_MIN = 0.2
+ZOOM_MAX = 5.0
+ZOOM_STEP = 1.1
+camera_x = WIDTH/2
+camera_y = HEIGHT/2
+camera_speed = 5
+
+
+def clamp_camera():
+    global camera_x, camera_y
+    half_view_w = (WIDTH / 2) / camera_zoom
+    half_view_h = (HEIGHT / 2) / camera_zoom
+
+    if half_view_w >= WIDTH / 2:
+        camera_x = WIDTH / 2
+    else:
+        camera_x = max(half_view_w, min(WIDTH - half_view_w, camera_x))
+
+    if half_view_h >= HEIGHT / 2:
+        camera_y = HEIGHT / 2
+    else:
+        camera_y = max(half_view_h, min(HEIGHT - half_view_h, camera_y))
+
+
+def world_to_screen(pos):
+    wx, wy = pos
+    sx = (wx - camera_x) * camera_zoom + WIDTH / 2
+    sy = (wy - camera_y) * camera_zoom + HEIGHT / 2
+    return sx, sy
+
+
+def \
+        screen_to_world(pos):
+    sx, sy = pos
+    wx = (sx - WIDTH / 2) / camera_zoom + camera_x
+    wy = (sy - HEIGHT / 2) / camera_zoom + camera_y
+    return wx, wy
+
+
+def zoom_at(screen_pos, zoom_factor):
+    global camera_zoom, camera_x, camera_y
+    if zoom_factor == 1.0:
+        return
+    before = screen_to_world(screen_pos)
+    camera_zoom = max(ZOOM_MIN, min(ZOOM_MAX, camera_zoom * zoom_factor))
+    camera_x = before[0] - (screen_pos[0] - WIDTH / 2) / camera_zoom
+    camera_y = before[1] - (screen_pos[1] - HEIGHT / 2) / camera_zoom
+    clamp_camera()
 
 # ---------------- COLLISION ----------------
 
@@ -156,7 +210,7 @@ def check_atom_merging():
         for j in range(len(atoms)):
             dx = atoms[i].x - atoms[j].x
             dy = atoms[i].y - atoms[j].y
-            if math.hypot(dx, dy) < MERGE_DISTANCE+30:
+            if math.hypot(dx, dy) < MERGE_DISTANCE + 30:
                 cluster.append(atoms[j])
         
         if len(cluster) == 2:
@@ -184,6 +238,10 @@ def check_atom_merging():
 def add_atom(name, x, y, radius):
     particles.append(Atom(name, x, y, radius))
 
+@staticmethod
+def remove_atom(atom):
+    particles.remove(atom)
+
 # ---------------- INIT ----------------
 for _ in range(int(NUM_QUARKS/2)):
     particles.append(Quark("up"))
@@ -201,14 +259,51 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        # Gravity well controls
         if event.type == pygame.MOUSEBUTTONDOWN:
             gravity_active = True
 
         if event.type == pygame.MOUSEBUTTONUP:
             gravity_active = False
 
+        # Camera Controls
+        # Zoom in & out
+        if event.type == pygame.MOUSEWHEEL:
+            if event.y > 0:
+                zoom_at(pygame.mouse.get_pos(), ZOOM_STEP)
+            elif event.y < 0:
+                zoom_at(pygame.mouse.get_pos(), 1 / ZOOM_STEP)
+
+        # Camera movement
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
+            camera_x -= camera_speed * camera_zoom
+        if keys[pygame.K_d]:
+            camera_x += camera_speed * camera_zoom
+        if keys[pygame.K_w]:
+            camera_y -= camera_speed * camera_zoom
+        if keys[pygame.K_s]:
+            camera_y += camera_speed * camera_zoom
+
+        clamp_camera()
+
     if gravity_active:
-        gravity_pos = pygame.mouse.get_pos()
+        gravity_pos = screen_to_world(pygame.mouse.get_pos())
+
+    # ---------Creates sound when hold mouse pad-----------
+
+    mouse_buttons = pygame.mouse.get_pressed()
+
+    if mouse_buttons[0]:  # If Left Mouse is held down
+        if not pygame.mixer.get_busy():  # Only play if sound isn't already playing
+            # -1 tells it to loop until we call stop()
+            channel = tone.play(loops=-1)
+    else:
+        # If the mouse is released, stop the sound
+        tone.fadeout(2000)
+        '''if channel:
+            channel.stop()'''
 
     for p in particles:
         if p.destroy:
@@ -220,13 +315,15 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        # if isinstance(p, Nucleon) and p.name == "H-1":
-            # apply_cluster_attraction(p, particles)
+        if isinstance(p, Nucleon) and p.name == "H-1":
+            apply_cluster_attraction(p, particles)
 
     if gravity_active:
-        mx, my = gravity_pos
-        pygame.draw.circle(screen, (180, 180, 255), (mx, my), 25, 2)
-        pygame.draw.circle(screen, (120, 120, 255), (mx, my), 10)
+        mx, my = world_to_screen(gravity_pos)
+        outer_radius = max(1, int(25 * camera_zoom))
+        inner_radius = max(1, int(10 * camera_zoom))
+        pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
+        pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
 
     check_quarks_merging()
     check_atom_merging()
