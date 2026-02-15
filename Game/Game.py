@@ -184,6 +184,14 @@ def check_quarks_merging():
 
                 particles.append(Nucleon(name,avg_x, avg_y))
 
+                if name in atoms_symbols:
+                    index = atoms_symbols.index(name)
+                    if not atoms_discovered[index]:
+                        atoms_discovered[index] = True
+                        new_discovery = Discoveries(name)
+                        new_discovery.is_visible = True
+                        popup.append(new_discovery)
+
                 for q in group:
                     q.destroy = True
 
@@ -230,10 +238,10 @@ def check_atom_merging():
                         discovered_counter += 1
                         already_merged.remove(already_merged[i])"""
 
-                # print("Merged atoms:", name)
+                print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
                 avg_y = sum(q.y for q in group) / len(group)
-                # print("Merged :", name)
+                print("Merged :", name)
 
                 particles.append(Atom(name, avg_x, avg_y, 10))
 
@@ -242,6 +250,7 @@ def check_atom_merging():
                     atoms_discovered[atoms_symbols.index(name)] = True
                     new_discovery.is_visible = True
                     popup.append(new_discovery)
+                    print(atoms_discovered)
 
                 for q in group:
                     q.destroy = True
@@ -273,6 +282,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        for popups in popup:
+            popups.handle_exit(event)
 
         # Gravity well controls
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -325,9 +337,6 @@ while running:
             particles.remove(p)
             continue
         p.update()
-
-    for popups in popup:
-        popups.handle_exit(event)
 
     handle_collisions()
 
