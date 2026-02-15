@@ -15,7 +15,13 @@ pygame.init()
 
 pygame.mixer.init()
 tone = pygame.mixer.Sound("100hz_tone.wav")
+tone.set_volume(0.1)
 channel = None  # We'll use a specific channel to control the sound
+
+#Background music
+pygame.mixer.music.load("Arron.mp3")
+pygame.mixer.music.set_volume(0.15)
+pygame.mixer.music.play(-1)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Quantum Sandbox - Up & Down Quarks")
@@ -28,30 +34,64 @@ popup = []
 gravity_active = False
 gravity_pos = (0, 0)
 
+#music info
+music_on = True
+
 #camera information
-camera_zoom = 1.0
-ZOOM_MIN = 0.2
-ZOOM_MAX = 5.0
-ZOOM_STEP = 1.1
+camera_zoom = DEFAULT_ZOOM
 camera_x = WIDTH/2
 camera_y = HEIGHT/2
-camera_speed = 5
+follow_mode = True
 
 
 def clamp_camera():
     global camera_x, camera_y
-    half_view_w = (WIDTH / 2) / camera_zoom
-    half_view_h = (HEIGHT / 2) / camera_zoom
-
-    if half_view_w >= WIDTH / 2:
-        camera_x = WIDTH / 2
-    else:
-        camera_x = max(half_view_w, min(WIDTH - half_view_w, camera_x))
-
-    if half_view_h >= HEIGHT / 2:
-        camera_y = HEIGHT / 2
-    else:
-        camera_y = max(half_view_h, min(HEIGHT - half_view_h, camera_y))
+    
+    # The world center (where the character is)
+    world_center_x = WIDTH / 2
+    world_center_y = HEIGHT / 2
+    
+    # Maximum distance the camera can move from center
+    # Scale with zoom - when zoomed in, allow more camera movement
+    max_camera_offset = MAX_OFFSET / camera_zoom
+    
+    # Clamp camera position to stay within bounds of world center
+    camera_x = max(world_center_x - max_camera_offset, 
+                   min(world_center_x + max_camera_offset, camera_x))
+    camera_y = max(world_center_y - max_camera_offset, 
+                   min(world_center_y + max_camera_offset, camera_y))
+    
+def cursor_follow_camera(mouse_pos):
+    global camera_x, camera_y
+    
+    # Get mouse position in screen coordinates
+    mouse_x, mouse_y = mouse_pos
+    
+    # Calculate offset from screen center to mouse
+    offset_x = mouse_x - (WIDTH / 2)
+    offset_y = mouse_y - (HEIGHT / 2)
+    
+    # Limit the offset
+    distance = math.hypot(offset_x, offset_y)
+    if distance > MAX_OFFSET:
+        offset_x = (offset_x / distance) * MAX_OFFSET
+        offset_y = (offset_y / distance) * MAX_OFFSET
+    
+    # Apply distance multiplier to scale the effect
+    offset_x *= DISTANCE_MULTIPLIER
+    offset_y *= DISTANCE_MULTIPLIER
+    
+    # Target camera position (world center + offset)
+    target_camera_x = (WIDTH / 2) + offset_x
+    target_camera_y = (HEIGHT / 2) + offset_y
+    
+    # Smooth interpolation
+    t = 1 - math.exp(-RESPONSIVENESS)
+    camera_x += (target_camera_x - camera_x) * t
+    camera_y += (target_camera_y - camera_y) * t
+    
+    # Apply bounds
+    clamp_camera()
 
 
 def world_to_screen(pos):
@@ -286,6 +326,16 @@ running = True
 while running:
     clock.tick(60)
     screen.fill((15, 15, 30))
+    # Draw circular border centered on camera (screen center) and scaled by zoom
+    
+    center = world_to_screen((int(WIDTH/2), int(HEIGHT/2)))
+    radius = max(1, int(BORDER_RADIUS * camera_zoom))
+    border_thickness = max(1, int(BORDER_THICKNESS * camera_zoom))
+    
+    outer_radius = max(1, int(OUTER_BORDER_RADIUS * camera_zoom))
+    outer_border_thickness = max(1, int(OUTER_BORDER_THICKNESS * camera_zoom))
+    pygame.draw.circle(screen, BORDER_COLOR, center, radius, border_thickness)
+    pygame.draw.circle(screen, (5,5,7), center, outer_radius, outer_border_thickness)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -310,26 +360,43 @@ while running:
                     collection = not show_collection(screen)
 
         # Camera Controls
+        keys = pygame.key.get_pressed()
+        
+        #reset the camera zoom
+        if keys[pygame.K_r]:
+            camera_zoom = default_zoom
+        
+        #toggle between wether the camera follows your mouse or not
+        if keys[pygame.K_f]:
+            if follow_mode:
+                follow_mode = False
+            else:
+                follow_mode = True
         # Zoom in & out
         if event.type == pygame.MOUSEWHEEL:
             if event.y > 0:
                 zoom_at(pygame.mouse.get_pos(), ZOOM_STEP)
             elif event.y < 0:
                 zoom_at(pygame.mouse.get_pos(), 1 / ZOOM_STEP)
+                
+        #music control
+        #toggle music with M key
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_f:
+                follow_mode = not follow_mode
+    
+            if event.key == pygame.K_m:  # Toggle music with M key
+                music_on = not music_on
+                if music_on:
+                    pygame.mixer.music.unpause()
+                else:
+                    pygame.mixer.music.pause()
 
-        # Camera movement
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_a]:
-            camera_x -= camera_speed * camera_zoom
-        if keys[pygame.K_d]:
-            camera_x += camera_speed * camera_zoom
-        if keys[pygame.K_w]:
-            camera_y -= camera_speed * camera_zoom
-        if keys[pygame.K_s]:
-            camera_y += camera_speed * camera_zoom
-
-        clamp_camera()
+    if follow_mode:
+        cursor_follow_camera(pygame.mouse.get_pos())
+    else:
+        camera_x,camera_y = screen_to_world((WIDTH/2,HEIGHT/2))
+    clamp_camera()
 
     if collection:
         show_collection(screen)
@@ -347,7 +414,7 @@ while running:
                 channel = tone.play(loops=-1)
         else:
             # If the mouse is released, stop the sound
-            tone.fadeout(2000)
+            tone.fadeout(500)
             '''if channel:
                 channel.stop()'''
 

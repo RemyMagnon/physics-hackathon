@@ -153,7 +153,7 @@ class Discoveries(Popup):
         index = atoms_symbols.index(element)
         WIDTH = 400
         HEIGHT = 250
-        super().__init__((1000 - WIDTH) / 2, (800 - HEIGHT) / 2, WIDTH, HEIGHT,
+        super().__init__((WIDTH * 2.4), (HEIGHT * 0.2), WIDTH, HEIGHT,
                          atoms_name[index], atoms_info[index],
                          atoms_color[index])
 

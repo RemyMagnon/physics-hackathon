@@ -30,7 +30,9 @@ def show_collection(screen):
             check_img = pygame.transform.scale(check_img, (30, 30))
             screen.blit(check_img, (WIDTH-50, 85 + 20*(atoms_name.index(atom)-1)))"""
 
-
+        
+        i = atoms_name.index(atom)
+        
         if atom == "Neon-20":
             badge_name = neon_font.render(atom, True, (255, 95, 31))
             text_rect = badge_name.get_rect(center = (WIDTH - 230, 170 + 20*i))
@@ -42,7 +44,6 @@ def show_collection(screen):
             continue
 
 
-        i = atoms_name.index(atom)
         if i%2 == 0:
             badge_name = font.render(atom, True, (255, 255, 255))
             text_rect = badge_name.get_rect(center = (WIDTH - 300, 100 + 20*i))
