@@ -1,6 +1,6 @@
 #====== Window Info =====
-WIDTH = 1500
-HEIGHT = 1000
+WIDTH = 1000
+HEIGHT = 700
 
 #====== Border Info =====
 #The Radius is only 40% of the height

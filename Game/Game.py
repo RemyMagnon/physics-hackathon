@@ -6,10 +6,9 @@ from Quark import Quark
 from Nucleon import Nucleon
 from Atom import Atom, atoms_symbols
 from FusionCards import Discoveries, atoms_discovered
-from collection import show_collection
+from collection import show_collection, badges_rects
 import os
 
-# os.environ["SDL_AUDIODRIVER"] = "pulse"
 
 pygame.init()
 
@@ -31,6 +30,7 @@ font = pygame.font.SysFont(None, 22)
 
 particles = []
 popup = []
+cards = []
 gravity_active = False
 gravity_pos = (0, 0)
 
@@ -344,6 +344,9 @@ while running:
 
         for popups in popup:
             popups.handle_exit(event)
+        
+        for card in cards:
+            card.handle_exit(event)
 
         # Gravity well controls
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -359,6 +362,17 @@ while running:
                     collection = show_collection(screen)
                 elif collection:
                     collection = not show_collection(screen)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and collection:
+            for rects in badges_rects:
+                if rects == None: continue
+                else:
+                    pygame.draw.rect(screen, (255, 0, 0), rects, 2)
+                    if rects.collidepoint(event.pos):
+                        show_card = Discoveries(atoms_symbols[badges_rects.index(rects)], 150, 300)
+                        show_card.is_visible = True
+                        cards.append(show_card)
+
 
         # Camera Controls
         keys = pygame.key.get_pressed()
@@ -429,6 +443,7 @@ while running:
 
     for popups in popup:
         popups.draw(screen)
+    
 
     if gravity_active:
         mx, my = world_to_screen(gravity_pos)
@@ -439,6 +454,8 @@ while running:
 
     if collection:
         show_collection(screen)
+        for card in cards:
+            card.draw(screen)
     else:
         for p in particles:
             p.update()

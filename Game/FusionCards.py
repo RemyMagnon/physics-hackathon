@@ -149,13 +149,20 @@ class Popup:
 
 
 class Discoveries(Popup):
-    def __init__(self, element):
+    def __init__(self, element, x=None, y=None):
         index = atoms_symbols.index(element)
         WIDTH = 400
         HEIGHT = 250
-        super().__init__((WIDTH * 2.4), (HEIGHT * 0.2), WIDTH, HEIGHT,
-                         atoms_name[index], atoms_info[index],
-                         atoms_color[index])
+        if x == None and y == None:
+            super().__init__((WIDTH * 2.4), (HEIGHT * 0.2), WIDTH, HEIGHT,
+                            atoms_name[index], atoms_info[index],
+                            atoms_color[index])
+        else: 
+            super().__init__(x, y, WIDTH, HEIGHT,
+                            atoms_name[index], atoms_info[index],
+                            atoms_color[index]) 
+
+
 
 
 
