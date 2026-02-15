@@ -267,7 +267,11 @@ class Atom(Particle):
             color = (255, 255, 255)
         else:
             color = (0, 0, 0)
-        text = Game.font.render(atoms_symbols[self.index], True, color)
+
+        font_size = max(8, int(20 * Game.camera_zoom))
+        dynamic_font = pygame.font.SysFont(None, font_size)
+
+        text = dynamic_font.render(atoms_symbols[self.index], True, color)
         rect = text.get_rect(center=(sx, sy))
         surface.blit(text, rect)
     
