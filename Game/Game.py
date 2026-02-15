@@ -31,6 +31,65 @@ camera_x = WIDTH/2
 camera_y = HEIGHT/2
 camera_speed = 5
 
+# --- INITIALIZATION (Put this at the very top) ---
+discovered_count = 0  # This is the counter that fills the slots
+
+
+def draw_hud(screen):
+    # 1. Define the look of the grid
+    GRID_BG = (40, 40, 40, 120)  # Transparent gray
+    GREEN = (0, 255, 0)
+    BLACK = (0, 0, 0)
+
+    # 2. Draw 25 slots
+    for i in range(25):
+        slot_rect = pygame.Rect(10 + (i * 22), 10, 20,
+                                30)  # Positioned at top-left
+
+        # Draw the background of the bar first (optional)
+        # Fill with green if the counter has reached this slot
+        if i < discovered_count:
+            pygame.draw.rect(screen, GREEN, slot_rect)
+        else:
+            # Drawing the "empty" state (transparent/dark)
+            pygame.draw.rect(screen, GRID_BG, slot_rect)
+
+        # 3. The black delimitations (the grid lines)
+        pygame.draw.rect(screen, BLACK, slot_rect, 2)
+
+
+a4 = "H-1",
+a5 = "H-2",
+a6 = "H-3",
+a7 = "He-3",
+a8 = "He-4",
+a9 = "Li-6",
+a10 = "Li-7",
+a11 = "Be-10",
+a13 = "B-10",
+a14 = "B-11",
+a15 = "C-10",
+a16 = "C-11",
+a17 = "N-13",
+a18 = "O-14",
+a19 = "C-12",
+a20 = "C-13",
+a21 = "C-14",
+a22 = "N-14",
+a23 = "O-16",
+a24 = "O-15",
+a25 = "O-17",
+a26 = "O-18",
+a27 = "F-19",
+a28 = "F-18",
+a29 = "Ne-20"
+
+already_merged = [a4, a5, a6, a7, a8, a9, a10, a11, a13, a14, a15, a16,
+                  a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28,
+                  a29]
+
+
+
 
 def clamp_camera():
     global camera_x, camera_y
@@ -210,7 +269,7 @@ def check_atom_merging():
         for j in range(len(atoms)):
             dx = atoms[i].x - atoms[j].x
             dy = atoms[i].y - atoms[j].y
-            if math.hypot(dx, dy) < MERGE_DISTANCE + 30:
+            if math.hypot(dx, dy) < atoms[i].radius + atoms[j].radius + 30:
                 cluster.append(atoms[j])
         
         if len(cluster) == 2:
@@ -221,6 +280,13 @@ def check_atom_merging():
             
             print(name)
             if name != None and name in atoms_symbols:
+
+                """for i in range(len(already_merged)):
+                    if name == already_merged[i]:
+                        # turn color of the grid into green
+                        global discovered_counter
+                        discovered_counter += 1
+                        already_merged.remove(already_merged[i])"""
 
                 print("Merged atoms:", name)
                 avg_x = sum(q.x for q in group) / len(group)
@@ -236,7 +302,8 @@ def check_atom_merging():
 
 @staticmethod
 def add_atom(name, x, y, radius):
-    particles.append(Atom(name, x, y, radius))
+    if name in atoms_symbols:
+        particles.append(Atom(name, x, y, radius))
 
 @staticmethod
 def remove_atom(atom):
@@ -315,8 +382,8 @@ while running:
 
     for p in particles:
         p.draw(screen)
-        if isinstance(p, Nucleon) and p.name == "H-1":
-            apply_cluster_attraction(p, particles)
+        # if isinstance(p, Nucleon) and p.name == "H-1":
+            # apply_cluster_attraction(p, particles)
 
     if gravity_active:
         mx, my = world_to_screen(gravity_pos)
