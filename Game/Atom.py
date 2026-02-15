@@ -255,7 +255,7 @@ class Atom(Particle):
 
     def draw(self, surface):
         import Game
-        if self.half_life == float('inf'):
+        if self.half_life == float('inf') or Game.collection == True:
             x_offset = 0
             y_offset = 0
         else:
