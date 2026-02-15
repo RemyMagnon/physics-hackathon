@@ -264,7 +264,7 @@ def check_atom_merging():
         for j in range(len(atoms)):
             dx = atoms[i].x - atoms[j].x
             dy = atoms[i].y - atoms[j].y
-            if math.hypot(dx, dy) < atoms[i].radius + atoms[j].radius + 30:
+            if math.hypot(dx, dy) <= atoms[i].radius + atoms[j].radius:
                 cluster.append(atoms[j])
         
         if len(cluster) == 2:
@@ -430,18 +430,18 @@ while running:
     for popups in popup:
         popups.draw(screen)
 
-    if gravity_active:
-        mx, my = world_to_screen(gravity_pos)
-        outer_radius = max(1, int(25 * camera_zoom))
-        inner_radius = max(1, int(10 * camera_zoom))
-        pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
-        pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
-
     if collection:
         show_collection(screen)
     else:
         for p in particles:
             p.update()
+
+        if gravity_active:
+            mx, my = world_to_screen(gravity_pos)
+            outer_radius = max(1, int(25 * camera_zoom))
+            inner_radius = max(1, int(5 * camera_zoom))
+            pygame.draw.circle(screen, (180, 180, 255), (int(mx), int(my)), outer_radius, 2)
+            pygame.draw.circle(screen, (120, 120, 255), (int(mx), int(my)), inner_radius)
 
     check_quarks_merging()
     check_atom_merging()
